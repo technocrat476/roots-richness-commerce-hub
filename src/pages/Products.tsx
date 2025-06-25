@@ -16,22 +16,45 @@ const Products = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const { dispatch } = useCart();
 
+  // Filter and sort products
+  const filteredProducts = products
+    .filter(product => {
+      const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
+      const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                           product.shortDescription.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchesCategory && matchesSearch;
+    })
+    .sort((a, b) => {
+      switch (sortBy) {
+        case 'price-low':
+          return a.price - b.price;
+        case 'price-high':
+          return b.price - a.price;
+        case 'name':
+          return a.name.localeCompare(b.name);
+        case 'featured':
+        default:
+          return b.featured ? 1 : -1;
+      }
+    });
+
   // SEO: Update document title and meta description
   useEffect(() => {
     document.title = 'Premium Natural Products - Wood-Pressed Oils & Organic Wellness Products | Roots and Richness';
     
-    const metaDescription = document.querySelector('meta[name="description"]');
+    const metaDescription = document.querySelector('meta[name="description"]') as HTMLMetaElement;
     if (metaDescription) {
       metaDescription.setAttribute('content', 'Shop premium wood-pressed oils, tribal-sourced coffee, and natural wellness products. 100% organic, traditionally processed, directly from source. Free shipping on orders over ₹500.');
     }
 
     // Add canonical URL
-    const canonical = document.querySelector('link[rel="canonical"]') || document.createElement('link');
-    canonical.setAttribute('rel', 'canonical');
-    canonical.setAttribute('href', window.location.origin + '/products');
-    if (!document.querySelector('link[rel="canonical"]')) {
+    let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
+    if (!canonical) {
+      canonical = document.createElement('link');
+      canonical.setAttribute('rel', 'canonical');
       document.head.appendChild(canonical);
     }
+    canonical.setAttribute('href', window.location.origin + '/products');
 
     // Add structured data for product catalog
     const structuredData = {
@@ -60,13 +83,14 @@ const Products = () => {
       }
     };
 
-    const scriptTag = document.querySelector('#products-structured-data') || document.createElement('script');
-    scriptTag.id = 'products-structured-data';
-    scriptTag.type = 'application/ld+json';
-    scriptTag.textContent = JSON.stringify(structuredData);
-    if (!document.querySelector('#products-structured-data')) {
+    let scriptTag = document.querySelector('#products-structured-data') as HTMLScriptElement;
+    if (!scriptTag) {
+      scriptTag = document.createElement('script');
+      scriptTag.id = 'products-structured-data';
+      scriptTag.type = 'application/ld+json';
       document.head.appendChild(scriptTag);
     }
+    scriptTag.textContent = JSON.stringify(structuredData);
 
     return () => {
       // Cleanup structured data on unmount
@@ -75,29 +99,7 @@ const Products = () => {
         existingScript.remove();
       }
     };
-  }, []);
-
-  // Filter and sort products
-  const filteredProducts = products
-    .filter(product => {
-      const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
-      const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           product.shortDescription.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchesCategory && matchesSearch;
-    })
-    .sort((a, b) => {
-      switch (sortBy) {
-        case 'price-low':
-          return a.price - b.price;
-        case 'price-high':
-          return b.price - a.price;
-        case 'name':
-          return a.name.localeCompare(b.name);
-        case 'featured':
-        default:
-          return b.featured ? 1 : -1;
-      }
-    });
+  }, [filteredProducts]);
 
   const handleAddToCart = (product: any) => {
     dispatch({
