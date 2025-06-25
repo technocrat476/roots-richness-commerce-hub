@@ -1,10 +1,11 @@
 
 import { useParams, Link } from 'react-router-dom';
-import { Calendar, User, Clock, ArrowLeft, Share2 } from 'lucide-react';
+import { Calendar, User, Clock, ArrowLeft, Share2, ShoppingCart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { products } from '@/data/products';
 
 const BlogPost = () => {
   const { slug } = useParams();
@@ -52,8 +53,20 @@ const BlogPost = () => {
     date: '2024-01-15',
     category: 'Health & Wellness',
     image: 'https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?w=800&h=400&fit=crop',
-    readTime: '5 min read'
+    readTime: '5 min read',
+    // SEO: Related product keywords for contextual linking
+    relatedKeywords: ['wood-pressed', 'oil', 'coconut', 'sesame', 'groundnut', 'natural', 'organic']
   };
+
+  // Find related products based on blog content keywords
+  const getRelatedProducts = (keywords: string[]) => {
+    return products.filter(product => {
+      const productText = `${product.name} ${product.shortDescription} ${product.description}`.toLowerCase();
+      return keywords.some(keyword => productText.includes(keyword.toLowerCase()));
+    }).slice(0, 3);
+  };
+
+  const relatedProducts = getRelatedProducts(post.relatedKeywords);
 
   const relatedPosts = [
     {
@@ -160,6 +173,78 @@ const BlogPost = () => {
               dangerouslySetInnerHTML={{ __html: post.content }}
             />
           </div>
+
+          {/* Related Products Section - SEO Backlinks */}
+          {relatedProducts.length > 0 && (
+            <section className="mt-12 p-8 bg-neutral-light rounded-2xl">
+              <h3 className="text-2xl font-playfair font-bold text-secondary mb-6">
+                Featured Products Mentioned in This Article
+              </h3>
+              <p className="text-neutral-medium mb-6">
+                Experience the premium wood-pressed oils we discussed in this article. Each product is traditionally processed and sourced directly from farmers.
+              </p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {relatedProducts.map((product) => (
+                  <Card key={product.id} className="group hover:shadow-lg transition-shadow">
+                    <div className="relative overflow-hidden rounded-t-lg">
+                      <img
+                        src={product.images[0]}
+                        alt={`${product.name} - As featured in ${post.title}`}
+                        className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      {product.originalPrice && (
+                        <Badge className="absolute top-3 left-3 bg-accent text-white">
+                          Save ₹{product.originalPrice - product.price}
+                        </Badge>
+                      )}
+                    </div>
+                    <CardContent className="p-4">
+                      <h4 className="font-playfair font-semibold text-secondary mb-2 line-clamp-2">
+                        {product.name}
+                      </h4>
+                      <p className="text-sm text-neutral-medium mb-3 line-clamp-2">
+                        {product.shortDescription}
+                      </p>
+                      <div className="flex items-center justify-between mb-3">
+                        <div>
+                          <span className="text-lg font-bold text-secondary">
+                            ₹{product.price}
+                          </span>
+                          {product.originalPrice && (
+                            <span className="text-sm text-neutral-medium line-through ml-2">
+                              ₹{product.originalPrice}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex space-x-2">
+                        <Link to={`/products/${product.slug}`} className="flex-1">
+                          <Button variant="outline" size="sm" className="w-full">
+                            View Product
+                          </Button>
+                        </Link>
+                        <Link to={`/products/${product.slug}`}>
+                          <Button size="sm" className="btn-primary">
+                            <ShoppingCart size={14} />
+                          </Button>
+                        </Link>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+
+              {/* CTA to view all products */}
+              <div className="text-center mt-8">
+                <Link to="/products">
+                  <Button className="btn-primary">
+                    Explore All Our Premium Products
+                  </Button>
+                </Link>
+              </div>
+            </section>
+          )}
 
           {/* Article Footer */}
           <footer className="mt-16 pt-8 border-t border-neutral-light">
