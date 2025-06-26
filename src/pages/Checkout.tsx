@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, CreditCard, Truck, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,9 +8,14 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { useCart } from '@/contexts/CartContext';
+import { processPayment } from '@/services/razorpay';
+import { useToast } from '@/hooks/use-toast';
 
 const Checkout = () => {
-  const { state } = useCart();
+  const { state, dispatch } = useCart();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const [isProcessing, setIsProcessing] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     firstName: '',
@@ -29,10 +34,102 @@ const Checkout = () => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // TODO: Implement order processing
-    console.log('Order submitted:', formData);
+  const validateForm = () => {
+    const requiredFields = ['email', 'firstName', 'lastName', 'phone', 'address', 'city', 'state', 'pincode'];
+    for (const field of requiredFields) {
+      if (!formData[field as keyof typeof formData].trim()) {
+        toast({
+          title: "Missing Information",
+          description: `Please fill in your ${field.replace(/([A-Z])/g, ' $1').toLowerCase()}`,
+          variant: "destructive",
+        });
+        return false;
+      }
+    }
+    
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      toast({
+        title: "Invalid Email",
+        description: "Please enter a valid email address",
+        variant: "destructive",
+      });
+      return false;
+    }
+
+    return true;
+  };
+
+  const handlePayment = async () => {
+    if (!validateForm()) return;
+    
+    setIsProcessing(true);
+
+    try {
+      const paymentData = {
+        amount: total * 100, // Razorpay expects amount in paise
+        currency: 'INR',
+        receipt: `receipt_${Date.now()}`,
+        notes: {
+          customerName: `${formData.firstName} ${formData.lastName}`,
+          customerEmail: formData.email,
+          itemCount: state.itemCount
+        }
+      };
+
+      const customerData = {
+        name: `${formData.firstName} ${formData.lastName}`,
+        email: formData.email,
+        contact: formData.phone
+      };
+
+      await processPayment(
+        paymentData,
+        customerData,
+        (response) => {
+          // Payment successful
+          const orderData = {
+            orderId: response.razorpay_order_id,
+            paymentId: response.razorpay_payment_id,
+            items: state.items,
+            subtotal: subtotal,
+            tax: tax,
+            total: total,
+            customerInfo: formData
+          };
+
+          // Clear cart
+          dispatch({ type: 'CLEAR_CART' });
+
+          // Navigate to order confirmation
+          navigate('/order-confirmation', { state: { orderData } });
+
+          toast({
+            title: "Payment Successful!",
+            description: "Your order has been placed successfully.",
+          });
+        },
+        (error) => {
+          // Payment failed
+          console.error('Payment error:', error);
+          toast({
+            title: "Payment Failed",
+            description: "There was an issue processing your payment. Please try again.",
+            variant: "destructive",
+          });
+        }
+      );
+    } catch (error) {
+      console.error('Payment processing error:', error);
+      toast({
+        title: "Payment Error",
+        description: "Unable to process payment. Please check your details and try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   const subtotal = state.total;
@@ -182,7 +279,7 @@ const Checkout = () => {
                   </div>
                   
                   <div className="text-sm text-neutral-medium">
-                    You'll be redirected to Razorpay to complete your payment securely.
+                    Supports all major payment methods including credit/debit cards, UPI, net banking, and wallets.
                   </div>
                 </div>
               </CardContent>
@@ -240,11 +337,12 @@ const Checkout = () => {
                 </div>
 
                 <Button
-                  onClick={handleSubmit}
+                  onClick={handlePayment}
+                  disabled={isProcessing || state.items.length === 0}
                   className="btn-primary w-full"
                   size="lg"
                 >
-                  Place Order - ₹{total.toLocaleString()}
+                  {isProcessing ? 'Processing...' : `Pay ₹${total.toLocaleString()}`}
                 </Button>
 
                 {/* Trust Badges */}
