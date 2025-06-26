@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ShoppingCart, Star, Heart, Truck, Shield, RotateCcw, ArrowLeft } from 'lucide-react';
@@ -8,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { products } from '@/data/products';
 import { useCart } from '@/contexts/CartContext';
+import StickyCheckoutButton from '@/components/ui/StickyCheckoutButton';
 
 const ProductDetail = () => {
   const { slug } = useParams();
@@ -314,6 +314,9 @@ const ProductDetail = () => {
           </div>
         )}
       </div>
+
+      {/* Sticky Checkout Button */}
+      <StickyCheckoutButton />
     </div>
   );
 };

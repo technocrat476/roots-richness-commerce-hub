@@ -1,10 +1,10 @@
-
 import { Link } from 'react-router-dom';
 import { Minus, Plus, Trash2, ArrowLeft, ShoppingBag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { useCart } from '@/contexts/CartContext';
+import StickyCheckoutButton from '@/components/ui/StickyCheckoutButton';
 
 const Cart = () => {
   const { state, dispatch } = useCart();
@@ -204,6 +204,9 @@ const Cart = () => {
           </div>
         </div>
       </div>
+
+      {/* Sticky Checkout Button */}
+      <StickyCheckoutButton />
     </div>
   );
 };
