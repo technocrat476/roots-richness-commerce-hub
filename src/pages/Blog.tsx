@@ -4,7 +4,6 @@ import { Calendar, User, ArrowRight, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import SocialShare from '@/components/ui/SocialShare';
 
 const Blog = () => {
   const blogPosts = [
@@ -99,9 +98,6 @@ const Blog = () => {
               Discover insights on natural wellness, traditional practices, and sustainable living 
               from our community of experts and partners.
             </p>
-            <div className="flex justify-center pt-4">
-              <SocialShare showFollowText={true} />
-            </div>
           </div>
         </div>
       </section>
