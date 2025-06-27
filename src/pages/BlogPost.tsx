@@ -1,11 +1,12 @@
 
 import { useParams, Link } from 'react-router-dom';
-import { Calendar, User, Clock, ArrowLeft, Share2, ShoppingCart } from 'lucide-react';
+import { Calendar, User, Clock, ArrowLeft, ShoppingCart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { products } from '@/data/products';
+import SocialShare from '@/components/ui/SocialShare';
 
 const BlogPost = () => {
   const { slug } = useParams();
@@ -85,6 +86,8 @@ const BlogPost = () => {
     }
   ];
 
+  const currentUrl = window.location.href;
+
   if (!post) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -134,7 +137,7 @@ const BlogPost = () => {
               {post.title}
             </h1>
 
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div className="flex flex-col gap-4">
               <div className="flex items-center space-x-6 text-sm text-neutral-medium">
                 <div className="flex items-center space-x-2">
                   <User size={16} />
@@ -150,10 +153,12 @@ const BlogPost = () => {
                 </div>
               </div>
               
-              <Button variant="outline" size="sm">
-                <Share2 size={16} className="mr-2" />
-                Share Article
-              </Button>
+              <SocialShare 
+                variant="blog-header" 
+                url={currentUrl} 
+                title={post.title}
+                className="pt-2 border-t border-neutral-light"
+              />
             </div>
           </header>
 
@@ -246,8 +251,16 @@ const BlogPost = () => {
             </section>
           )}
 
-          {/* Article Footer */}
-          <footer className="mt-16 pt-8 border-t border-neutral-light">
+          {/* Article Footer with Social Share */}
+          <footer className="mt-16 pt-8 border-t border-neutral-light space-y-6">
+            <SocialShare 
+              variant="blog-footer" 
+              url={currentUrl} 
+              title={post.title}
+            />
+            
+            <Separator />
+            
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div className="space-y-2">
                 <h3 className="font-playfair font-semibold text-secondary">About the Author</h3>

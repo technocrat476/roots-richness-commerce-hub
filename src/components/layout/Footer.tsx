@@ -1,6 +1,7 @@
 
 import { Link } from 'react-router-dom';
-import { Mail, Phone, MapPin, Facebook, Instagram, Twitter } from 'lucide-react';
+import { Mail, Phone, MapPin } from 'lucide-react';
+import SocialShare from '@/components/ui/SocialShare';
 
 const Footer = () => {
   return (
@@ -14,16 +15,9 @@ const Footer = () => {
               Bringing you premium, authentic products directly from nature's source. 
               Traditional methods, modern quality standards.
             </p>
-            <div className="flex space-x-4">
-              <a href="#" className="hover:text-primary transition-colors">
-                <Facebook size={20} />
-              </a>
-              <a href="#" className="hover:text-primary transition-colors">
-                <Instagram size={20} />
-              </a>
-              <a href="#" className="hover:text-primary transition-colors">
-                <Twitter size={20} />
-              </a>
+            <div className="space-y-3">
+              <p className="text-sm font-medium">Follow Us</p>
+              <SocialShare variant="footer" />
             </div>
           </div>
 
