@@ -23,6 +23,10 @@ import FAQ from "./pages/FAQ";
 import NotFound from "./pages/NotFound";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import ShippingPolicy from "./pages/policies/ShippingPolicy";
+import ReturnRefundPolicy from "./pages/policies/ReturnRefundPolicy";
+import PrivacyPolicy from "./pages/policies/PrivacyPolicy";
+import TermsAndConditions from "./pages/policies/TermsAndConditions";
 
 const queryClient = new QueryClient();
 
@@ -61,6 +65,10 @@ const App = () => (
                         <Route path="/blog" element={<Blog />} />
                         <Route path="/blog/:slug" element={<BlogPost />} />
                         <Route path="/faq" element={<FAQ />} />
+                        <Route path="/shipping-policy" element={<ShippingPolicy />} />
+                        <Route path="/return-refund-policy" element={<ReturnRefundPolicy />} />
+                        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                        <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
                         <Route path="*" element={<NotFound />} />
                       </Routes>
                     </main>

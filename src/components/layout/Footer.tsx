@@ -50,18 +50,18 @@ const Footer = () => {
           <div className="space-y-4">
             <h4 className="text-lg font-playfair font-semibold">Customer Care</h4>
             <div className="space-y-2">
-              <a href="#" className="block text-gray-300 hover:text-primary transition-colors text-sm">
+              <Link to="/shipping-policy" className="block text-gray-300 hover:text-primary transition-colors text-sm">
                 Shipping Policy
-              </a>
-              <a href="#" className="block text-gray-300 hover:text-primary transition-colors text-sm">
+              </Link>
+              <Link to="/return-refund-policy" className="block text-gray-300 hover:text-primary transition-colors text-sm">
                 Return Policy
-              </a>
-              <a href="#" className="block text-gray-300 hover:text-primary transition-colors text-sm">
+              </Link>
+              <Link to="/privacy-policy" className="block text-gray-300 hover:text-primary transition-colors text-sm">
                 Privacy Policy
-              </a>
-              <a href="#" className="block text-gray-300 hover:text-primary transition-colors text-sm">
+              </Link>
+              <Link to="/terms-and-conditions" className="block text-gray-300 hover:text-primary transition-colors text-sm">
                 Terms of Service
-              </a>
+              </Link>
             </div>
           </div>
 
