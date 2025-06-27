@@ -1,10 +1,11 @@
 
 import { useParams, Link } from 'react-router-dom';
-import { Calendar, User, Clock, ArrowLeft, Share2, ShoppingCart } from 'lucide-react';
+import { Calendar, User, Clock, ArrowLeft, ShoppingCart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import SocialShare from '@/components/ui/SocialShare';
 import { products } from '@/data/products';
 
 const BlogPost = () => {
@@ -134,7 +135,7 @@ const BlogPost = () => {
               {post.title}
             </h1>
 
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
               <div className="flex items-center space-x-6 text-sm text-neutral-medium">
                 <div className="flex items-center space-x-2">
                   <User size={16} />
@@ -150,10 +151,7 @@ const BlogPost = () => {
                 </div>
               </div>
               
-              <Button variant="outline" size="sm">
-                <Share2 size={16} className="mr-2" />
-                Share Article
-              </Button>
+              <SocialShare title={post.title} showFollowText={true} />
             </div>
           </header>
 
@@ -248,17 +246,26 @@ const BlogPost = () => {
 
           {/* Article Footer */}
           <footer className="mt-16 pt-8 border-t border-neutral-light">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-              <div className="space-y-2">
-                <h3 className="font-playfair font-semibold text-secondary">About the Author</h3>
-                <p className="text-sm text-neutral-medium">
-                  {post.author} is our Quality Head with expertise in traditional processing methods and quality assurance.
-                </p>
+            <div className="flex flex-col gap-6">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div className="space-y-2">
+                  <h3 className="font-playfair font-semibold text-secondary">About the Author</h3>
+                  <p className="text-sm text-neutral-medium">
+                    {post.author} is our Quality Head with expertise in traditional processing methods and quality assurance.
+                  </p>
+                </div>
+                
+                <Button variant="outline">
+                  View All Posts by {post.author}
+                </Button>
               </div>
-              
-              <Button variant="outline">
-                View All Posts by {post.author}
-              </Button>
+
+              <Separator />
+
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <span className="text-sm text-neutral-medium">Share this article:</span>
+                <SocialShare title={post.title} />
+              </div>
             </div>
           </footer>
         </div>

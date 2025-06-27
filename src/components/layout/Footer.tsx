@@ -1,6 +1,6 @@
 
 import { Link } from 'react-router-dom';
-import { Mail, Phone, MapPin, Facebook, Instagram, Twitter } from 'lucide-react';
+import { Mail, Phone, MapPin, Facebook, Instagram, Youtube } from 'lucide-react';
 
 const Footer = () => {
   return (
@@ -15,14 +15,32 @@ const Footer = () => {
               Traditional methods, modern quality standards.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="hover:text-primary transition-colors">
-                <Facebook size={20} />
+              <a 
+                href="https://www.facebook.com/rootsandrichness" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-[#1D3B2A] hover:text-[#D4A441] transition-colors"
+                aria-label="Follow us on Facebook"
+              >
+                <Facebook size={24} />
               </a>
-              <a href="#" className="hover:text-primary transition-colors">
-                <Instagram size={20} />
+              <a 
+                href="https://www.instagram.com/rootsandrichness" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-[#1D3B2A] hover:text-[#D4A441] transition-colors"
+                aria-label="Follow us on Instagram"
+              >
+                <Instagram size={24} />
               </a>
-              <a href="#" className="hover:text-primary transition-colors">
-                <Twitter size={20} />
+              <a 
+                href="https://www.youtube.com/@rootsandrichness" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-[#1D3B2A] hover:text-[#D4A441] transition-colors"
+                aria-label="Subscribe to our YouTube channel"
+              >
+                <Youtube size={24} />
               </a>
             </div>
           </div>
