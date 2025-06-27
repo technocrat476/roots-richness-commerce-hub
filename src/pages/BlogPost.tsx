@@ -1,10 +1,10 @@
-
 import { useParams, Link } from 'react-router-dom';
 import { Calendar, User, Clock, ArrowLeft, Share2, ShoppingCart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import SocialShare from '@/components/ui/SocialShare';
 import { products } from '@/data/products';
 
 const BlogPost = () => {
@@ -16,7 +16,7 @@ const BlogPost = () => {
     title: 'The Art of Wood-Pressed Oil: Why Traditional Methods Matter',
     slug: 'wood-pressed-oil-traditional-methods',
     content: `
-      <p>In our modern world of industrial processing and mass production, traditional methods of oil extraction might seem outdated. However, the ancient practice of wood-pressing oils offers benefits that modern techniques simply cannot match.</p>
+      <p>In our modern world of industrial processing and mass production, traditional methods of oil extraction might seem outdated. However, the ancient practice of wood-pressed oils offers benefits that modern techniques simply cannot match.</p>
 
       <h2>What is Wood-Pressed Oil?</h2>
       <p>Wood-pressed oil, also known as cold-pressed oil, is extracted using traditional wooden presses (called "ghani" in Hindi). This method has been used for centuries across India and other parts of the world. The process involves crushing oil seeds or nuts between wooden pestle and mortar, powered by bullocks or motors at very low speeds.</p>
@@ -149,12 +149,13 @@ const BlogPost = () => {
                   <span>{post.readTime}</span>
                 </div>
               </div>
-              
-              <Button variant="outline" size="sm">
-                <Share2 size={16} className="mr-2" />
-                Share Article
-              </Button>
             </div>
+
+            {/* Social Share - Top of Article */}
+            <SocialShare 
+              title={post.title}
+              className="py-4 border-t border-b border-neutral-light"
+            />
           </header>
 
           {/* Featured Image */}
@@ -171,6 +172,14 @@ const BlogPost = () => {
             <div
               className="text-neutral-medium leading-relaxed space-y-6"
               dangerouslySetInnerHTML={{ __html: post.content }}
+            />
+          </div>
+
+          {/* Social Share - Bottom of Article */}
+          <div className="mt-12 pt-8 border-t border-neutral-light">
+            <SocialShare 
+              title={post.title}
+              className="justify-center"
             />
           </div>
 

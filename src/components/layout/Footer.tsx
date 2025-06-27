@@ -1,6 +1,6 @@
 
 import { Link } from 'react-router-dom';
-import { Mail, Phone, MapPin, Facebook, Instagram, Twitter } from 'lucide-react';
+import { Mail, Phone, MapPin, Facebook, Instagram, Youtube } from 'lucide-react';
 
 const Footer = () => {
   return (
@@ -14,16 +14,37 @@ const Footer = () => {
               Bringing you premium, authentic products directly from nature's source. 
               Traditional methods, modern quality standards.
             </p>
-            <div className="flex space-x-4">
-              <a href="#" className="hover:text-primary transition-colors">
-                <Facebook size={20} />
-              </a>
-              <a href="#" className="hover:text-primary transition-colors">
-                <Instagram size={20} />
-              </a>
-              <a href="#" className="hover:text-primary transition-colors">
-                <Twitter size={20} />
-              </a>
+            <div className="space-y-4">
+              <h4 className="text-lg font-playfair font-semibold">Follow Us</h4>
+              <div className="flex space-x-4">
+                <a 
+                  href="https://www.facebook.com/rootsandrichness" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-white hover:text-primary transition-colors duration-300"
+                  aria-label="Follow us on Facebook"
+                >
+                  <Facebook size={24} />
+                </a>
+                <a 
+                  href="https://www.instagram.com/rootsandrichness" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-white hover:text-primary transition-colors duration-300"
+                  aria-label="Follow us on Instagram"
+                >
+                  <Instagram size={24} />
+                </a>
+                <a 
+                  href="https://www.youtube.com/@rootsandrichness" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-white hover:text-primary transition-colors duration-300"
+                  aria-label="Subscribe to our YouTube channel"
+                >
+                  <Youtube size={24} />
+                </a>
+              </div>
             </div>
           </div>
 
