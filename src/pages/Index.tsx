@@ -1,12 +1,10 @@
 
-import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, ShoppingCart, Star } from 'lucide-react';
+import { ArrowRight, ShoppingCart, Star, Truck, Shield, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { products } from '@/data/products';
 import { useCart } from '@/contexts/CartContext';
-import ScrollHero from '@/components/ui/ScrollHero';
 
 const Index = () => {
   const { dispatch } = useCart();
@@ -27,8 +25,78 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
-      {/* Scroll Hero Section */}
-      <ScrollHero />
+      {/* Hero Section */}
+      <section className="relative bg-gradient-to-br from-neutral-light to-white py-20 lg:py-32">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="space-y-8 animate-fade-in">
+              <div className="space-y-4">
+                <h1 className="text-4xl lg:text-6xl font-playfair font-bold text-secondary leading-tight">
+                  Pure. Traditional.
+                  <span className="text-primary block">Authentic.</span>
+                </h1>
+                <p className="text-lg text-neutral-medium max-w-lg">
+                  Discover premium wood-pressed oils, tribal-sourced coffee, and natural wellness products. 
+                  Crafted with traditional methods, delivered with modern care.
+                </p>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Link to="/products">
+                  <Button size="lg" className="btn-primary group">
+                    Shop Now
+                    <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" size={20} />
+                  </Button>
+                </Link>
+                <Link to="/about">
+                  <Button variant="outline" size="lg" className="btn-outline">
+                    Our Story
+                  </Button>
+                </Link>
+              </div>
+
+              {/* Trust Badges */}
+              <div className="flex flex-wrap gap-6 pt-4">
+                <div className="flex items-center space-x-2">
+                  <Truck className="text-primary" size={20} />
+                  <span className="text-sm font-medium">Free Shipping</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Shield className="text-primary" size={20} />
+                  <span className="text-sm font-medium">100% Natural</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Phone className="text-primary" size={20} />
+                  <span className="text-sm font-medium">24/7 Support</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="relative">
+              <div className="aspect-square bg-gradient-to-br from-primary/20 to-accent/20 rounded-full flex items-center justify-center">
+                <img
+                  src="https://images.unsplash.com/photo-1500673922987-e212871fec22?w=600&h=600&fit=crop"
+                  alt="Natural products"
+                  className="w-4/5 h-4/5 object-cover rounded-full shadow-xl"
+                />
+              </div>
+              {/* Floating Elements */}
+              <div className="absolute -top-4 -left-4 bg-white p-4 rounded-xl shadow-lg">
+                <div className="flex items-center space-x-2">
+                  <Star className="text-primary fill-current" size={16} />
+                  <span className="text-sm font-semibold">5.0 Rating</span>
+                </div>
+              </div>
+              <div className="absolute -bottom-4 -right-4 bg-white p-4 rounded-xl shadow-lg">
+                <div className="text-center">
+                  <div className="text-lg font-bold text-secondary">1000+</div>
+                  <div className="text-xs text-neutral-medium">Happy Customers</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Featured Products */}
       <section className="py-20 bg-white">
