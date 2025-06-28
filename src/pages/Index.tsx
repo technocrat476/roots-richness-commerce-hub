@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { products } from '@/data/products';
 import { useCart } from '@/contexts/CartContext';
+import ScrollHero from '@/components/ui/ScrollHero';
 
 const Index = () => {
   const { dispatch } = useCart();
@@ -25,19 +26,22 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-neutral-light to-white py-20 lg:py-32">
+      {/* Scroll-Based Hero Section */}
+      <ScrollHero />
+
+      {/* Original Hero Section - Simplified */}
+      <section className="relative bg-gradient-to-br from-neutral-light to-white py-20 lg:py-32 z-10">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-8 animate-fade-in">
               <div className="space-y-4">
-                <h1 className="text-4xl lg:text-6xl font-playfair font-bold text-secondary leading-tight">
-                  Pure. Traditional.
-                  <span className="text-primary block">Authentic.</span>
-                </h1>
+                <h2 className="text-3xl lg:text-5xl font-playfair font-bold text-secondary leading-tight">
+                  Discover Our
+                  <span className="text-primary block">Premium Collection</span>
+                </h2>
                 <p className="text-lg text-neutral-medium max-w-lg">
-                  Discover premium wood-pressed oils, tribal-sourced coffee, and natural wellness products. 
-                  Crafted with traditional methods, delivered with modern care.
+                  Explore our complete range of wood-pressed oils, tribal-sourced coffee, and natural wellness products. 
+                  Each product tells a story of tradition and purity.
                 </p>
               </div>
 
