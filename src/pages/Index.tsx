@@ -26,10 +26,10 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
-      {/* Scroll-Based Hero Section */}
+      {/* Film Roll Style Hero Section */}
       <ScrollHero />
 
-      {/* Original Hero Section - Simplified */}
+      {/* Main Content Section */}
       <section className="relative bg-gradient-to-br from-neutral-light to-white py-20 lg:py-32 z-10">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">

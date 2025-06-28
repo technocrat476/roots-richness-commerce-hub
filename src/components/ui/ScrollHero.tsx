@@ -14,23 +14,30 @@ const heroSlides: HeroSlide[] = [
   {
     id: 1,
     image: "https://images.unsplash.com/photo-1500673922987-e212871fec22?w=1920&h=1080&fit=crop&q=80",
-    alt: "Wood-pressed mustard oil being extracted",
+    alt: "Traditional mustard farming in India",
     headline: "Purity from the Source",
-    subhead: "Traditional wood-pressed extraction methods preserve nature's goodness"
+    subhead: "Farm-sourced, untouched, and natural"
   },
   {
     id: 2,
     image: "https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=1920&h=1080&fit=crop&q=80",
-    alt: "Pouring unrefined groundnut oil",
-    headline: "Cold-Pressed. Unrefined. Real.",
-    subhead: "Every drop carries the authentic taste and nutrition of pure oils"
+    alt: "Wooden cold press extracting mustard oil",
+    headline: "Wood-Pressed. No Compromise.",
+    subhead: "Retaining nutrition, flavor, and texture"
   },
   {
     id: 3,
     image: "https://images.unsplash.com/photo-1472396961693-142e6e269027?w=1920&h=1080&fit=crop&q=80",
-    alt: "Araku Valley tribal harvesting Arabica",
+    alt: "Tribal women harvesting Arabica coffee",
     headline: "From Araku with Love",
-    subhead: "Tribal communities bring you the finest coffee straight from the mountains"
+    subhead: "Sustainably grown Arabica coffee"
+  },
+  {
+    id: 4,
+    image: "https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b?w=1920&h=1080&fit=crop&q=80",
+    alt: "Cold-pressed groundnut oil being bottled",
+    headline: "Untouched. Natural. Real.",
+    subhead: "Every drop tells a story of purity"
   }
 ];
 
@@ -63,13 +70,29 @@ const ScrollHero = () => {
     const slideScrollEnd = (index + 1) * slideHeight;
     
     if (scrollY < slideScrollStart) {
-      return 'translateY(100%)';
+      // Slide is coming from the right
+      return 'translateX(100%)';
     } else if (scrollY >= slideScrollEnd) {
-      return 'translateY(-100%)';
+      // Slide has moved to the left
+      return 'translateX(-100%)';
     } else {
+      // Slide is currently active, calculate horizontal position
       const progress = (scrollY - slideScrollStart) / slideHeight;
-      return `translateY(${(1 - progress) * 100 - 100}%)`;
+      return `translateX(${(1 - progress) * 100 - 100}%)`;
     }
+  };
+
+  const getImageScale = (index: number) => {
+    const slideHeight = window.innerHeight;
+    const slideScrollStart = index * slideHeight;
+    const slideScrollEnd = (index + 1) * slideHeight;
+    
+    if (scrollY >= slideScrollStart && scrollY < slideScrollEnd) {
+      const progress = (scrollY - slideScrollStart) / slideHeight;
+      // Slight zoom effect during transition
+      return 1 + (progress * 0.05);
+    }
+    return 1;
   };
 
   const getTextOpacity = (index: number) => {
@@ -81,11 +104,11 @@ const ScrollHero = () => {
       return 0;
     } else {
       const progress = (scrollY - slideScrollStart) / slideHeight;
-      // Fade in during first 30% and fade out during last 30%
-      if (progress < 0.3) {
-        return progress / 0.3;
-      } else if (progress > 0.7) {
-        return (1 - progress) / 0.3;
+      // Fade in during first 20% and fade out during last 20%
+      if (progress < 0.2) {
+        return progress / 0.2;
+      } else if (progress > 0.8) {
+        return (1 - progress) / 0.2;
       } else {
         return 1;
       }
@@ -94,53 +117,79 @@ const ScrollHero = () => {
 
   return (
     <div className="relative">
-      {/* Fixed container for images */}
-      <div className="fixed top-0 left-0 w-full h-screen z-0">
+      {/* Fixed container for the film roll effect */}
+      <div className="fixed top-0 left-0 w-full h-screen z-0 overflow-hidden">
         {heroSlides.map((slide, index) => (
           <div
             key={slide.id}
-            className="absolute inset-0 w-full h-full transition-transform duration-700 ease-out"
+            className="absolute inset-0 w-full h-full transition-transform duration-1000 ease-out"
             style={{ 
               transform: getSlideTransform(index),
               willChange: 'transform'
             }}
           >
-            <img
-              src={slide.image}
-              alt={slide.alt}
-              className="w-full h-full object-cover"
-              loading={index === 0 ? "eager" : "lazy"}
-            />
-            <div className="absolute inset-0 bg-black/30" />
-            
-            {/* Overlay Text */}
-            <div 
-              className="absolute inset-0 flex items-center justify-center text-center px-4"
+            <div
+              className="w-full h-full bg-cover bg-center transition-transform duration-1000"
               style={{ 
-                opacity: getTextOpacity(index),
-                transition: 'opacity 0.5s ease-out'
+                backgroundImage: `url(${slide.image})`,
+                transform: `scale(${getImageScale(index)})`,
+                willChange: 'transform'
               }}
             >
-              <div className="max-w-4xl">
-                <h1 className="text-4xl md:text-6xl lg:text-7xl font-playfair font-bold text-white mb-4 drop-shadow-lg">
+              <img
+                src={slide.image}
+                alt={slide.alt}
+                className="w-full h-full object-cover opacity-0"
+                loading={index === 0 ? "eager" : "lazy"}
+              />
+            </div>
+            
+            {/* Dark overlay for better text readability */}
+            <div className="absolute inset-0 bg-black/40" />
+            
+            {/* Overlay Text */}
+            <section 
+              className="absolute inset-0 flex items-end justify-center pb-20 px-4"
+              style={{ 
+                opacity: getTextOpacity(index),
+                transition: 'opacity 0.6s ease-out'
+              }}
+            >
+              <div className="max-w-4xl text-center">
+                <h2 className="text-4xl md:text-5xl lg:text-6xl font-playfair font-bold text-white mb-4 drop-shadow-lg">
                   {slide.headline}
-                </h1>
+                </h2>
                 <p className="text-lg md:text-xl lg:text-2xl text-white/90 font-inter drop-shadow-md">
                   {slide.subhead}
                 </p>
               </div>
-            </div>
+            </section>
           </div>
         ))}
       </div>
 
-      {/* Spacer to create scroll space */}
+      {/* Spacer to create scroll space for the film roll effect */}
       <div style={{ height: `${heroSlides.length * 100}vh` }} />
 
-      {/* Scroll indicator */}
-      <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-10 animate-bounce">
-        <ChevronDown className="text-white w-8 h-8 drop-shadow-lg" />
-      </div>
+      {/* Scroll indicator - only visible on first slide */}
+      {currentSlide === 0 && (
+        <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-10 text-center animate-bounce">
+          <ChevronDown className="text-white w-8 h-8 drop-shadow-lg mx-auto mb-2" />
+          <span className="text-white text-sm font-inter drop-shadow-md">Scroll to discover</span>
+        </div>
+      )}
+
+      {/* CTA button appears after second slide */}
+      {currentSlide >= 1 && (
+        <div className="fixed bottom-8 right-8 z-10">
+          <a
+            href="/products"
+            className="bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 shadow-lg hover:shadow-xl"
+          >
+            Explore Products
+          </a>
+        </div>
+      )}
     </div>
   );
 };
