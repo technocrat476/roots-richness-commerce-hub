@@ -1,6 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Truck, Shield, Phone } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 
 interface AutoplayHeroProps {
   interval?: number;
@@ -76,27 +78,56 @@ const AutoplayHero: React.FC<AutoplayHeroProps> = ({ interval = 1000 }) => {
             />
             
             {/* Dark overlay for text readability */}
-            <div className="absolute inset-0 bg-black/30" />
+            <div className="absolute inset-0 bg-black/40" />
           </div>
         ))}
       </div>
 
-      {/* Text Overlay */}
+      {/* Main Content Overlay */}
       <div className="absolute inset-0 flex items-center justify-center text-center px-4">
-        <div className="max-w-4xl mx-auto space-y-6">
-          <h1 
-            className="text-4xl md:text-6xl lg:text-7xl font-playfair font-bold text-white leading-tight animate-fade-in"
-            key={`headline-${currentSlide}`}
-          >
-            {slides[currentSlide].headline}
-          </h1>
-          <p 
-            className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto animate-fade-in"
-            key={`subtext-${currentSlide}`}
-            style={{ animationDelay: '0.2s' }}
-          >
-            {slides[currentSlide].subtext}
-          </p>
+        <div className="max-w-4xl mx-auto space-y-8">
+          {/* Brand Tagline */}
+          <div className="space-y-4">
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-playfair font-bold text-white leading-tight">
+              Pure. Traditional.<br/>
+              <span className="text-primary">Authentic.</span>
+            </h1>
+            
+            <p className="text-lg md:text-xl text-white/90 max-w-3xl mx-auto leading-relaxed">
+              Discover premium wood-pressed oils, tribal-sourced coffee, and natural wellness products. 
+              Crafted with traditional methods, delivered with modern care.
+            </p>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Link to="/products">
+              <Button size="lg" className="btn-primary text-lg px-8 py-4">
+                Shop Now
+              </Button>
+            </Link>
+            <Link to="/about">
+              <Button size="lg" variant="outline" className="text-white border-white hover:bg-white hover:text-secondary text-lg px-8 py-4">
+                Our Story
+              </Button>
+            </Link>
+          </div>
+
+          {/* Features */}
+          <div className="flex flex-wrap justify-center gap-6 md:gap-8 pt-4">
+            <div className="flex items-center space-x-2 text-white/90">
+              <Truck size={20} />
+              <span className="text-sm md:text-base font-medium">Free Shipping</span>
+            </div>
+            <div className="flex items-center space-x-2 text-white/90">
+              <Shield size={20} />
+              <span className="text-sm md:text-base font-medium">100% Natural</span>
+            </div>
+            <div className="flex items-center space-x-2 text-white/90">
+              <Phone size={20} />
+              <span className="text-sm md:text-base font-medium">24/7 Support</span>
+            </div>
+          </div>
         </div>
       </div>
 
