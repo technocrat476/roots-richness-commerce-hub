@@ -6,6 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { products } from '@/data/products';
 import { useCart } from '@/contexts/CartContext';
 import AutoplayHero from '@/components/ui/AutoplayHero';
+import PageSEO from '@/components/SEO/PageSEO';
 
 const Index = () => {
   const { dispatch } = useCart();
@@ -24,8 +25,42 @@ const Index = () => {
     });
   };
 
+  // Structured data for homepage
+  const homePageStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Roots and Richness - Premium Natural Wellness Products",
+    "description": "Discover premium wood-pressed oils, tribal-sourced coffee, and natural wellness products. Authentic, sustainable, and directly from source to you.",
+    "url": "https://rootsandrichness.in/",
+    "mainEntity": {
+      "@type": "ItemList",
+      "name": "Featured Products",
+      "itemListElement": featuredProducts.map((product, index) => ({
+        "@type": "Product",
+        "position": index + 1,
+        "name": product.name,
+        "description": product.shortDescription,
+        "image": product.images[0],
+        "offers": {
+          "@type": "Offer",
+          "price": product.price,
+          "priceCurrency": "INR",
+          "availability": "https://schema.org/InStock"
+        }
+      }))
+    }
+  };
+
   return (
     <div className="min-h-screen">
+      <PageSEO 
+        title="Buy Wood-Pressed Oils Online | Premium Natural Wellness Products - Roots and Richness"
+        description="Discover premium wood-pressed oils, tribal-sourced coffee, and natural wellness products. Authentic, sustainable, and directly from source to you."
+        keywords="wood-pressed oils, cold-pressed oils, tribal coffee, natural wellness, groundnut oil, mustard oil, pure oils online, organic oils India"
+        canonicalUrl="https://rootsandrichness.in/"
+        structuredData={homePageStructuredData}
+      />
+
       {/* Autoplay Hero Section */}
       <AutoplayHero interval={1000} />
 
@@ -105,7 +140,7 @@ const Index = () => {
                   <div className="relative overflow-hidden rounded-t-lg">
                     <img
                       src={product.images[0]}
-                      alt={product.name}
+                      alt={`${product.name} - Premium wood-pressed oil from Roots and Richness`}
                       className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
                       loading="lazy"
                     />
@@ -152,6 +187,7 @@ const Index = () => {
                         <Button 
                           onClick={() => handleAddToCart(product)}
                           className="btn-primary"
+                          aria-label={`Add ${product.name} to cart`}
                         >
                           <ShoppingCart size={16} />
                         </Button>
@@ -245,7 +281,7 @@ const Index = () => {
               ].map((feature, index) => (
                 <Card key={index} className="text-center hover:shadow-lg transition-shadow duration-300 animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
                   <CardContent className="p-6">
-                    <div className="text-4xl mb-4">{feature.icon}</div>
+                    <div className="text-4xl mb-4" role="img" aria-label={feature.title}>{feature.icon}</div>
                     <h3 className="text-lg font-playfair font-semibold text-secondary mb-2">
                       {feature.title}
                     </h3>
@@ -270,10 +306,13 @@ const Index = () => {
                 Subscribe to our newsletter for wellness tips, product updates, and exclusive offers
               </p>
               <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+                <label htmlFor="newsletter-email" className="sr-only">Email address</label>
                 <input
+                  id="newsletter-email"
                   type="email"
                   placeholder="Enter your email"
                   className="flex-1 px-4 py-3 rounded-lg text-neutral-dark"
+                  aria-label="Enter your email for newsletter subscription"
                 />
                 <Button className="btn-primary">
                   Subscribe
