@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { products } from '@/data/products';
 import { useCart } from '@/contexts/CartContext';
+import AutoplayHero from '@/components/ui/AutoplayHero';
+import PageSEO from '@/components/SEO/PageSEO';
 
 const Index = () => {
   const { dispatch } = useCart();
@@ -23,250 +25,371 @@ const Index = () => {
     });
   };
 
+  // Structured data for homepage
+  const homePageStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Pure Wood-Pressed Oils, Handpicked from Indian Farms - Roots and Richness",
+    "description": "Cold-pressed, chemical-free oils and natural wellness products directly from Indian farms. Wood-pressed oils with traditional methods for authentic purity.",
+    "url": "https://rootsandrichness.in/",
+    "mainEntity": {
+      "@type": "ItemList",
+      "name": "Featured Products",
+      "itemListElement": featuredProducts.map((product, index) => ({
+        "@type": "Product",
+        "position": index + 1,
+        "name": product.name,
+        "description": product.shortDescription,
+        "image": product.images[0],
+        "offers": {
+          "@type": "Offer",
+          "price": product.price,
+          "priceCurrency": "INR",
+          "availability": "https://schema.org/InStock"
+        }
+      }))
+    }
+  };
+
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-neutral-light to-white py-20 lg:py-32">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-8 animate-fade-in">
-              <div className="space-y-4">
-                <h1 className="text-4xl lg:text-6xl font-playfair font-bold text-secondary leading-tight">
-                  Pure. Traditional.
-                  <span className="text-primary block">Authentic.</span>
-                </h1>
-                <p className="text-lg text-neutral-medium max-w-lg">
-                  Discover premium wood-pressed oils, tribal-sourced coffee, and natural wellness products. 
-                  Crafted with traditional methods, delivered with modern care.
-                </p>
-              </div>
+      <PageSEO 
+        title="Pure Wood-Pressed Oils, Handpicked from Indian Farms | Roots and Richness"
+        description="Cold-pressed, chemical-free oils and natural wellness products directly from Indian farms. Buy authentic wood-pressed mustard oil, groundnut oil, and tribal coffee online."
+        keywords="wood-pressed oils, cold-pressed oils, pure oils online, mustard oil, groundnut oil, tribal coffee, natural wellness products, buy oils online India"
+        canonicalUrl="https://rootsandrichness.in/"
+        structuredData={homePageStructuredData}
+      />
 
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link to="/products">
-                  <Button size="lg" className="btn-primary group">
-                    Shop Now
-                    <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" size={20} />
-                  </Button>
-                </Link>
-                <Link to="/about">
-                  <Button variant="outline" size="lg" className="btn-outline">
-                    Our Story
-                  </Button>
-                </Link>
-              </div>
+      {/* Autoplay Hero Section */}
+      <AutoplayHero interval={1000} />
 
-              {/* Trust Badges */}
-              <div className="flex flex-wrap gap-6 pt-4">
-                <div className="flex items-center space-x-2">
-                  <Truck className="text-primary" size={20} />
-                  <span className="text-sm font-medium">Free Shipping</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Shield className="text-primary" size={20} />
-                  <span className="text-sm font-medium">100% Natural</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Phone className="text-primary" size={20} />
-                  <span className="text-sm font-medium">24/7 Support</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="relative">
-              <div className="aspect-square bg-gradient-to-br from-primary/20 to-accent/20 rounded-full flex items-center justify-center">
-                <img
-                  src="https://images.unsplash.com/photo-1500673922987-e212871fec22?w=600&h=600&fit=crop"
-                  alt="Natural products"
-                  className="w-4/5 h-4/5 object-cover rounded-full shadow-xl"
-                />
-              </div>
-              {/* Floating Elements */}
-              <div className="absolute -top-4 -left-4 bg-white p-4 rounded-xl shadow-lg">
-                <div className="flex items-center space-x-2">
-                  <Star className="text-primary fill-current" size={16} />
-                  <span className="text-sm font-semibold">5.0 Rating</span>
-                </div>
-              </div>
-              <div className="absolute -bottom-4 -right-4 bg-white p-4 rounded-xl shadow-lg">
-                <div className="text-center">
-                  <div className="text-lg font-bold text-secondary">1000+</div>
-                  <div className="text-xs text-neutral-medium">Happy Customers</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Featured Products */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="text-center space-y-4 mb-12">
-            <h2 className="text-3xl lg:text-4xl font-playfair font-bold text-secondary">
-              Featured Products
-            </h2>
-            <p className="text-lg text-neutral-medium max-w-2xl mx-auto">
-              Handpicked premium products that bring the best of nature's goodness to your doorstep
+      {/* Main Content with SEO Structure */}
+      <main>
+        {/* Hero Content Section */}
+        <section className="py-16 bg-white text-center">
+          <div className="container mx-auto px-4">
+            <h1 className="text-4xl lg:text-6xl font-playfair font-bold text-secondary mb-6">
+              Pure Wood-Pressed Oils, Handpicked from Indian Farms
+            </h1>
+            <p className="text-xl lg:text-2xl text-neutral-medium mb-8 max-w-4xl mx-auto leading-relaxed">
+              Cold-pressed, chemical-free, and full of flavor — just like nature intended.
             </p>
-          </div>
+            
+            {/* Brand Pillars */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto mb-12">
+              <div className="flex items-center justify-center space-x-3">
+                <div className="w-3 h-3 bg-primary rounded-full"></div>
+                <span className="text-lg font-medium text-secondary">Wood-Pressed, Not Refined</span>
+              </div>
+              <div className="flex items-center justify-center space-x-3">
+                <div className="w-3 h-3 bg-primary rounded-full"></div>
+                <span className="text-lg font-medium text-secondary">From Small Farms</span>
+              </div>
+              <div className="flex items-center justify-center space-x-3">
+                <div className="w-3 h-3 bg-primary rounded-full"></div>
+                <span className="text-lg font-medium text-secondary">No Additives</span>
+              </div>
+            </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {featuredProducts.map((product, index) => (
-              <Card key={product.id} className="group hover:shadow-xl transition-all duration-300 animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
-                <div className="relative overflow-hidden rounded-t-lg">
-                  <img
-                    src={product.images[0]}
-                    alt={product.name}
-                    className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  {product.originalPrice && (
-                    <div className="absolute top-4 left-4 bg-accent text-white px-2 py-1 rounded-lg text-sm font-medium">
-                      Save ₹{product.originalPrice - product.price}
-                    </div>
-                  )}
-                </div>
-                <CardContent className="p-6">
-                  <div className="space-y-4">
-                    <div>
-                      <h3 className="text-lg font-playfair font-semibold text-secondary group-hover:text-primary transition-colors">
-                        {product.name}
-                      </h3>
-                      <p className="text-sm text-neutral-medium mt-1">
-                        {product.shortDescription}
-                      </p>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <div className="space-x-2">
-                        <span className="text-xl font-bold text-secondary">
-                          ₹{product.price}
-                        </span>
-                        {product.originalPrice && (
-                          <span className="text-sm text-neutral-medium line-through">
-                            ₹{product.originalPrice}
-                          </span>
-                        )}
-                      </div>
-                      <div className="flex items-center space-x-1">
-                        <Star className="text-primary fill-current" size={16} />
-                        <span className="text-sm text-neutral-medium">4.8</span>
-                      </div>
-                    </div>
-
-                    <div className="flex space-x-2">
-                      <Link to={`/products/${product.slug}`} className="flex-1">
-                        <Button variant="outline" className="w-full">
-                          View Details
-                        </Button>
-                      </Link>
-                      <Button 
-                        onClick={() => handleAddToCart(product)}
-                        className="btn-primary"
-                      >
-                        <ShoppingCart size={16} />
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-
-          <div className="text-center mt-12">
             <Link to="/products">
-              <Button size="lg" className="btn-primary">
-                View All Products
+              <Button size="lg" className="btn-primary text-lg px-8 py-4">
+                Explore Our Oils
                 <ArrowRight className="ml-2" size={20} />
               </Button>
             </Link>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Why Choose Us */}
-      <section className="py-20 bg-neutral-light">
-        <div className="container mx-auto px-4">
-          <div className="text-center space-y-4 mb-12">
-            <h2 className="text-3xl lg:text-4xl font-playfair font-bold text-secondary">
-              Why Choose Roots & Richness?
-            </h2>
-            <p className="text-lg text-neutral-medium max-w-2xl mx-auto">
-              We're committed to bringing you the finest natural products with complete transparency and care
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
-              {
-                icon: "🌿",
-                title: "100% Natural",
-                description: "No artificial additives, preservatives, or chemicals. Pure as nature intended."
-              },
-              {
-                icon: "🏔️",
-                title: "Direct from Source",
-                description: "Sourced directly from farmers and tribal communities for authentic quality."
-              },
-              {
-                icon: "🔬",
-                title: "Quality Tested",
-                description: "Every batch is tested for purity and quality before it reaches you."
-              },
-              {
-                icon: "🚚",
-                title: "Fast Delivery",
-                description: "Quick and secure delivery to ensure freshness and quality."
-              },
-              {
-                icon: "💚",
-                title: "Sustainable",
-                description: "Supporting sustainable farming practices and fair trade."
-              },
-              {
-                icon: "🎯",
-                title: "Customer First",
-                description: "Dedicated customer support and satisfaction guarantee."
-              }
-            ].map((feature, index) => (
-              <Card key={index} className="text-center hover:shadow-lg transition-shadow duration-300 animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
-                <CardContent className="p-6">
-                  <div className="text-4xl mb-4">{feature.icon}</div>
-                  <h3 className="text-lg font-playfair font-semibold text-secondary mb-2">
-                    {feature.title}
-                  </h3>
-                  <p className="text-neutral-medium">
-                    {feature.description}
-                  </p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Newsletter */}
-      <section className="py-20 bg-secondary text-white">
-        <div className="container mx-auto px-4 text-center">
-          <div className="max-w-2xl mx-auto space-y-6">
-            <h2 className="text-3xl font-playfair font-bold">
-              Stay Connected with Nature
-            </h2>
-            <p className="text-gray-300">
-              Subscribe to our newsletter for wellness tips, product updates, and exclusive offers
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="flex-1 px-4 py-3 rounded-lg text-neutral-dark"
-              />
-              <Button className="btn-primary">
-                Subscribe
-              </Button>
+        {/* Brand Story Section */}
+        <section id="brand-story" className="py-20 bg-neutral-light">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto text-center space-y-8">
+              <h2 className="text-3xl lg:text-4xl font-playfair font-bold text-secondary">
+                Purity, Tradition, and Transparency
+              </h2>
+              <div className="space-y-6 text-lg text-neutral-medium leading-relaxed">
+                <p>
+                  At Roots and Richness, we bring you pure, chemical-free wellness — sourced directly from Indian farms and tribal communities. Our products are made with traditional wood-pressed methods to preserve nutrition and authenticity.
+                </p>
+                <p>
+                  We started this journey to reconnect people with traditional Indian wellness practices. Every bottle tells a story of generations-old wisdom, sustainable farming, and the dedication of farmers who understand that the best products come from patience and care.
+                </p>
+                <blockquote className="text-xl italic text-primary border-l-4 border-primary pl-6 my-8">
+                  "We never refine. We never rush. We never compromise."
+                </blockquote>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+
+        {/* Product Highlights Section */}
+        <section id="product-highlights" className="py-20 bg-white">
+          <div className="container mx-auto px-4">
+            <div className="text-center space-y-4 mb-16">
+              <h2 className="text-3xl lg:text-4xl font-playfair font-bold text-secondary">
+                Our Featured Products
+              </h2>
+              <p className="text-lg text-neutral-medium max-w-2xl mx-auto">
+                Handpicked premium products that bring the best of nature's goodness to your doorstep
+              </p>
+            </div>
+
+            {/* Featured Product Stories */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+              <article className="bg-neutral-light rounded-lg p-8 shadow-lg hover:shadow-xl transition-shadow">
+                <h3 className="text-2xl font-playfair font-semibold text-secondary mb-4">
+                  Wood-Pressed Mustard Oil – Bold & Unrefined
+                </h3>
+                <p className="text-neutral-medium mb-6 leading-relaxed">
+                  Bold flavor, high heat tolerance, and 100% unrefined — perfect for traditional Indian cooking. Sourced from mustard farms in Rajasthan where farmers have perfected the art of oil pressing for generations.
+                </p>
+                <ul className="space-y-2 mb-6 text-sm text-neutral-medium">
+                  <li className="flex items-center"><span className="w-2 h-2 bg-primary rounded-full mr-3"></span>Rich in omega-3 fatty acids</li>
+                  <li className="flex items-center"><span className="w-2 h-2 bg-primary rounded-full mr-3"></span>High smoke point for deep frying</li>
+                  <li className="flex items-center"><span className="w-2 h-2 bg-primary rounded-full mr-3"></span>Natural antibacterial properties</li>
+                </ul>
+                <Link to="/products/wood-pressed-mustard-oil">
+                  <Button className="btn-primary w-full">Shop Now</Button>
+                </Link>
+              </article>
+
+              <article className="bg-neutral-light rounded-lg p-8 shadow-lg hover:shadow-xl transition-shadow">
+                <h3 className="text-2xl font-playfair font-semibold text-secondary mb-4">
+                  Cold-Pressed Groundnut Oil – Heart Healthy Choice
+                </h3>
+                <p className="text-neutral-medium mb-6 leading-relaxed">
+                  Rich in antioxidants and great for everyday cooking. Cold-pressed and chemical-free, sourced directly from Gujarat's small-batch farms where peanuts are grown in mineral-rich soil.
+                </p>
+                <ul className="space-y-2 mb-6 text-sm text-neutral-medium">
+                  <li className="flex items-center"><span className="w-2 h-2 bg-primary rounded-full mr-3"></span>Heart-healthy monounsaturated fats</li>
+                  <li className="flex items-center"><span className="w-2 h-2 bg-primary rounded-full mr-3"></span>Ideal for oil pulling routines</li>
+                  <li className="flex items-center"><span className="w-2 h-2 bg-primary rounded-full mr-3"></span>Natural vitamin E source</li>
+                </ul>
+                <Link to="/products/cold-pressed-groundnut-oil">
+                  <Button className="btn-primary w-full">Shop Now</Button>
+                </Link>
+              </article>
+
+              <article className="bg-neutral-light rounded-lg p-8 shadow-lg hover:shadow-xl transition-shadow">
+                <h3 className="text-2xl font-playfair font-semibold text-secondary mb-4">
+                  Arabica Coffee from Araku – Tribal Excellence
+                </h3>
+                <p className="text-neutral-medium mb-6 leading-relaxed">
+                  Grown by tribal farmers in Araku Valley, our coffee is bold, ethical, and aromatic. Meet Kamla Devi and her community who have been cultivating coffee in the Eastern Ghats for generations.
+                </p>
+                <ul className="space-y-2 mb-6 text-sm text-neutral-medium">
+                  <li className="flex items-center"><span className="w-2 h-2 bg-primary rounded-full mr-3"></span>Single-origin Arabica beans</li>
+                  <li className="flex items-center"><span className="w-2 h-2 bg-primary rounded-full mr-3"></span>Fair trade with tribal farmers</li>
+                  <li className="flex items-center"><span className="w-2 h-2 bg-primary rounded-full mr-3"></span>Grown at 3000+ feet elevation</li>
+                </ul>
+                <Link to="/products/araku-arabica-coffee">
+                  <Button className="btn-primary w-full">Learn More</Button>
+                </Link>
+              </article>
+            </div>
+
+            {/* Featured Products Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {featuredProducts.map((product, index) => (
+                <Card key={product.id} className="group hover:shadow-xl transition-all duration-300 animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
+                  <div className="relative overflow-hidden rounded-t-lg">
+                    <img
+                      src={product.images[0]}
+                      alt={`${product.name} - Pure wood-pressed oil from Roots and Richness, sourced directly from Indian farms`}
+                      className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
+                      loading="lazy"
+                    />
+                    {product.originalPrice && (
+                      <div className="absolute top-4 left-4 bg-accent text-white px-2 py-1 rounded-lg text-sm font-medium">
+                        Save ₹{product.originalPrice - product.price}
+                      </div>
+                    )}
+                  </div>
+                  <CardContent className="p-6">
+                    <div className="space-y-4">
+                      <div>
+                        <h3 className="text-lg font-playfair font-semibold text-secondary group-hover:text-primary transition-colors">
+                          {product.name}
+                        </h3>
+                        <p className="text-sm text-neutral-medium mt-1">
+                          {product.shortDescription}
+                        </p>
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        <div className="space-x-2">
+                          <span className="text-xl font-bold text-secondary">
+                            ₹{product.price}
+                          </span>
+                          {product.originalPrice && (
+                            <span className="text-sm text-neutral-medium line-through">
+                              ₹{product.originalPrice}
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex items-center space-x-1">
+                          <Star className="text-primary fill-current" size={16} />
+                          <span className="text-sm text-neutral-medium">4.8</span>
+                        </div>
+                      </div>
+
+                      <div className="flex space-x-2">
+                        <Link to={`/products/${product.slug}`} className="flex-1">
+                          <Button variant="outline" className="w-full">
+                            View Details
+                          </Button>
+                        </Link>
+                        <Button 
+                          onClick={() => handleAddToCart(product)}
+                          className="btn-primary"
+                          aria-label={`Add ${product.name} to cart`}
+                        >
+                          <ShoppingCart size={16} />
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
+            <div className="text-center mt-12">
+              <Link to="/products">
+                <Button size="lg" className="btn-primary">
+                  View All Products
+                  <ArrowRight className="ml-2" size={20} />
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* Enhanced Testimonials Section */}
+        <section id="testimonials" className="py-20 bg-neutral-light">
+          <div className="container mx-auto px-4">
+            <div className="text-center space-y-4 mb-12">
+              <h2 className="text-3xl lg:text-4xl font-playfair font-bold text-secondary">
+                What Our Customers Say
+              </h2>
+              <p className="text-lg text-neutral-medium max-w-2xl mx-auto">
+                Real experiences from our valued customers who trust our natural products
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+              <blockquote className="bg-white p-8 rounded-lg shadow-lg">
+                <p className="text-lg text-neutral-dark italic mb-6 leading-relaxed">
+                  "The groundnut oil reminds me of my grandmother's kitchen — so pure and flavorful. I can taste the difference in every dish I make. It's become a staple in my cooking."
+                </p>
+                <footer className="text-secondary font-semibold">
+                  — Priya K., Mumbai
+                </footer>
+              </blockquote>
+
+              <blockquote className="bg-white p-8 rounded-lg shadow-lg">
+                <p className="text-lg text-neutral-dark italic mb-6 leading-relaxed">
+                  "Finally found authentic mustard oil that doesn't compromise on quality. The traditional wood-pressing method really makes a difference in taste and nutrition."
+                </p>
+                <footer className="text-secondary font-semibold">
+                  — Rajesh S., Delhi
+                </footer>
+              </blockquote>
+            </div>
+          </div>
+        </section>
+
+        {/* Why Choose Us - Enhanced */}
+        <section className="py-20 bg-white">
+          <div className="container mx-auto px-4">
+            <div className="text-center space-y-4 mb-12">
+              <h2 className="text-3xl lg:text-4xl font-playfair font-bold text-secondary">
+                Why Choose Roots & Richness?
+              </h2>
+              <p className="text-lg text-neutral-medium max-w-2xl mx-auto">
+                We're committed to bringing you the finest natural products with complete transparency and care
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[
+                {
+                  icon: "🌿",
+                  title: "100% Natural & Pure",
+                  description: "No artificial additives, preservatives, or chemicals. Every product is tested for purity and authenticity."
+                },
+                {
+                  icon: "🏔️",
+                  title: "Direct from Source",
+                  description: "Sourced directly from farmers and tribal communities, ensuring fair trade and authentic quality."
+                },
+                {
+                  icon: "🔬",
+                  title: "Traditional Methods",
+                  description: "Wood-pressed oils and time-honored processing techniques that preserve nutrition and flavor."
+                },
+                {
+                  icon: "🚚",
+                  title: "Fast & Secure Delivery",
+                  description: "Quick delivery with proper packaging to ensure freshness reaches your doorstep safely."
+                },
+                {
+                  icon: "💚",
+                  title: "Sustainable & Ethical",
+                  description: "Supporting sustainable farming practices and empowering rural farming communities."
+                },
+                {
+                  icon: "🎯",
+                  title: "Customer Satisfaction",
+                  description: "Dedicated support team and 7-day easy return policy for your complete satisfaction."
+                }
+              ].map((feature, index) => (
+                <Card key={index} className="text-center hover:shadow-lg transition-shadow duration-300 animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
+                  <CardContent className="p-6">
+                    <div className="text-4xl mb-4" role="img" aria-label={feature.title}>{feature.icon}</div>
+                    <h3 className="text-lg font-playfair font-semibold text-secondary mb-2">
+                      {feature.title}
+                    </h3>
+                    <p className="text-neutral-medium">
+                      {feature.description}
+                    </p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Newsletter - Enhanced */}
+        <section className="py-20 bg-secondary text-white">
+          <div className="container mx-auto px-4 text-center">
+            <div className="max-w-2xl mx-auto space-y-6">
+              <h2 className="text-3xl font-playfair font-bold">
+                Join the Roots & Richness Family
+              </h2>
+              <p className="text-gray-300">
+                Subscribe to our newsletter for wellness tips, traditional recipes, product updates, and exclusive offers from our farming community
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+                <label htmlFor="newsletter-email" className="sr-only">Email address</label>
+                <input
+                  id="newsletter-email"
+                  type="email"
+                  placeholder="Enter your email"
+                  className="flex-1 px-4 py-3 rounded-lg text-neutral-dark"
+                  aria-label="Enter your email for newsletter subscription"
+                />
+                <Button className="btn-primary">
+                  Subscribe
+                </Button>
+              </div>
+              <p className="text-sm text-gray-400">
+                Join 10,000+ customers who trust our natural wellness products
+              </p>
+            </div>
+          </div>
+        </section>
+      </main>
     </div>
   );
 };
