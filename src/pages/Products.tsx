@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ShoppingCart, Star, Filter, Search, Grid, List } from 'lucide-react';
@@ -8,6 +7,8 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { products, categories } from '@/data/products';
 import { useCart } from '@/contexts/CartContext';
+import PageSEO from '@/components/SEO/PageSEO';
+import Breadcrumbs from '@/components/ui/Breadcrumbs';
 
 const Products = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -38,68 +39,51 @@ const Products = () => {
       }
     });
 
-  // SEO: Update document title and meta description
-  useEffect(() => {
-    document.title = 'Premium Natural Products - Wood-Pressed Oils & Organic Wellness Products | Roots and Richness';
-    
-    const metaDescription = document.querySelector('meta[name="description"]') as HTMLMetaElement;
-    if (metaDescription) {
-      metaDescription.setAttribute('content', 'Shop premium wood-pressed oils, tribal-sourced coffee, and natural wellness products. 100% organic, traditionally processed, directly from source. Free shipping on orders over ₹500.');
+  // Breadcrumb items
+  const breadcrumbItems = [
+    { label: 'Home', href: '/' },
+    { label: 'Products' }
+  ];
+
+  // Enhanced structured data
+  const productsPageStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Premium Wood-Pressed Oils & Natural Wellness Products",
+    "description": "Shop authentic wood-pressed oils, tribal-sourced coffee, and natural wellness products. 100% chemical-free, traditionally processed, directly from Indian farms. Free shipping on orders over ₹500. COD available.",
+    "url": "https://rootsandrichness.in/products",
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": breadcrumbItems.map((item, index) => ({
+        "@type": "ListItem",
+        "position": index + 1,
+        "name": item.label,
+        ...(item.href && { "item": `https://rootsandrichness.in${item.href}` })
+      }))
+    },
+    "mainEntity": {
+      "@type": "ItemList",
+      "numberOfItems": filteredProducts.length,
+      "itemListElement": filteredProducts.map((product, index) => ({
+        "@type": "Product",
+        "position": index + 1,
+        "name": product.name,
+        "description": product.shortDescription,
+        "image": product.images[0],
+        "url": `https://rootsandrichness.in/products/${product.slug}`,
+        "offers": {
+          "@type": "Offer",
+          "price": product.price,
+          "priceCurrency": "INR",
+          "availability": product.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"
+        },
+        "brand": {
+          "@type": "Brand",
+          "name": "Roots and Richness"
+        }
+      }))
     }
-
-    // Add canonical URL
-    let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
-    if (!canonical) {
-      canonical = document.createElement('link');
-      canonical.setAttribute('rel', 'canonical');
-      document.head.appendChild(canonical);
-    }
-    canonical.setAttribute('href', window.location.origin + '/products');
-
-    // Add structured data for product catalog
-    const structuredData = {
-      "@context": "https://schema.org",
-      "@type": "CollectionPage",
-      "name": "Premium Natural Products",
-      "description": "Premium wood-pressed oils, tribal-sourced coffee, and natural wellness products",
-      "url": window.location.origin + "/products",
-      "mainEntity": {
-        "@type": "ItemList",
-        "numberOfItems": filteredProducts.length,
-        "itemListElement": filteredProducts.map((product, index) => ({
-          "@type": "Product",
-          "position": index + 1,
-          "name": product.name,
-          "description": product.shortDescription,
-          "image": product.images[0],
-          "url": `${window.location.origin}/products/${product.slug}`,
-          "offers": {
-            "@type": "Offer",
-            "price": product.price,
-            "priceCurrency": "INR",
-            "availability": product.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"
-          }
-        }))
-      }
-    };
-
-    let scriptTag = document.querySelector('#products-structured-data') as HTMLScriptElement;
-    if (!scriptTag) {
-      scriptTag = document.createElement('script');
-      scriptTag.id = 'products-structured-data';
-      scriptTag.type = 'application/ld+json';
-      document.head.appendChild(scriptTag);
-    }
-    scriptTag.textContent = JSON.stringify(structuredData);
-
-    return () => {
-      // Cleanup structured data on unmount
-      const existingScript = document.querySelector('#products-structured-data');
-      if (existingScript) {
-        existingScript.remove();
-      }
-    };
-  }, [filteredProducts]);
+  };
 
   const handleAddToCart = (product: any) => {
     dispatch({
@@ -116,30 +100,51 @@ const Products = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* SEO-optimized Page Header */}
+      <PageSEO 
+        title="Buy Premium Wood-Pressed Oils Online | Natural Wellness Products - Roots and Richness"
+        description="Shop authentic wood-pressed oils, tribal-sourced coffee, and natural wellness products. 100% chemical-free, traditionally processed, directly from Indian farms. Free shipping on orders over ₹500. COD available."
+        keywords="buy wood-pressed oils online, cold-pressed oils India, pure groundnut oil, mustard oil online, organic oils, tribal coffee, natural wellness products, chemical-free oils, traditional oil pressing"
+        canonicalUrl="https://rootsandrichness.in/products"
+        structuredData={productsPageStructuredData}
+      />
+
+      {/* Breadcrumb */}
+      <div className="bg-neutral-light py-4">
+        <div className="container mx-auto px-4">
+          <Breadcrumbs items={breadcrumbItems} />
+        </div>
+      </div>
+
+      {/* Enhanced SEO-optimized Header */}
       <section className="bg-neutral-light py-16">
         <div className="container mx-auto px-4">
-          <div className="text-center space-y-4">
+          <div className="text-center space-y-6">
             <h1 className="text-4xl lg:text-5xl font-playfair font-bold text-secondary">
-              Premium Natural Products
+              Premium Wood-Pressed Oils & Natural Wellness Products
             </h1>
-            <p className="text-lg text-neutral-medium max-w-3xl mx-auto">
-              Discover our complete range of premium wood-pressed oils, tribal-sourced coffee, and natural wellness products. Each item is crafted with traditional methods and sourced directly from farmers.
+            <p className="text-lg text-neutral-medium max-w-4xl mx-auto leading-relaxed">
+              Discover our complete range of authentic wood-pressed oils, tribal-sourced coffee, and traditional wellness products. 
+              Each item is crafted using ancient methods and sourced directly from farmers and tribal communities across India. 
+              <span className="font-medium text-secondary"> 100% chemical-free, traditionally processed, with guaranteed purity.</span>
             </p>
             
-            {/* Trust indicators for conversion */}
-            <div className="flex justify-center items-center space-x-8 mt-8 text-sm">
-              <div className="flex items-center space-x-2">
+            {/* Enhanced trust indicators */}
+            <div className="flex flex-wrap justify-center items-center gap-6 mt-8 text-sm">
+              <div className="flex items-center space-x-2 bg-white px-4 py-2 rounded-full shadow-sm">
                 <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                <span>100% Natural</span>
+                <span className="font-medium">100% Chemical-Free</span>
               </div>
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-2 bg-white px-4 py-2 rounded-full shadow-sm">
                 <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                <span>Free Shipping ₹500+</span>
+                <span className="font-medium">Free Shipping ₹500+</span>
               </div>
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-2 bg-white px-4 py-2 rounded-full shadow-sm">
                 <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                <span>Direct from Source</span>
+                <span className="font-medium">Farm Direct Sourcing</span>
+              </div>
+              <div className="flex items-center space-x-2 bg-white px-4 py-2 rounded-full shadow-sm">
+                <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
+                <span className="font-medium">COD Available</span>
               </div>
             </div>
           </div>
@@ -221,7 +226,7 @@ const Products = () => {
           </div>
         </div>
 
-        {/* Products Grid/List */}
+        {/* Enhanced Products Grid/List */}
         <div className={`grid gap-6 ${
           viewMode === 'grid' 
             ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4' 
@@ -240,7 +245,7 @@ const Products = () => {
               }`}>
                 <img
                   src={product.images[0]}
-                  alt={`${product.name} - Premium ${product.category} at Roots and Richness`}
+                  alt={`Buy ${product.name} online - Premium wood-pressed ${product.category} from Roots and Richness, sourced directly from Indian farms`}
                   className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                   loading={index < 8 ? 'eager' : 'lazy'}
                 />
@@ -289,9 +294,10 @@ const Products = () => {
                     </div>
                   </div>
 
-                  {/* Conversion-focused benefits */}
-                  <div className="text-xs text-neutral-medium">
-                    ✓ Free shipping • ✓ 100% Natural • ✓ 7-day return
+                  {/* Enhanced conversion-focused benefits */}
+                  <div className="text-xs text-neutral-medium space-y-1">
+                    <div>✓ Free shipping • ✓ 100% Natural • ✓ 7-day return</div>
+                    <div className="text-primary font-medium">COD Available • Wood-Pressed</div>
                   </div>
 
                   <div className="flex space-x-2">
@@ -340,31 +346,89 @@ const Products = () => {
           </div>
         )}
 
-        {/* SEO Content Section */}
+        {/* Enhanced SEO Content Section */}
         <section className="mt-20 py-16 bg-neutral-light rounded-2xl">
-          <div className="max-w-4xl mx-auto px-6">
-            <h2 className="text-3xl font-playfair font-bold text-secondary mb-6">
-              Why Choose Our Natural Products?
+          <div className="max-w-6xl mx-auto px-6">
+            <h2 className="text-3xl font-playfair font-bold text-secondary mb-8 text-center">
+              Why Choose Wood-Pressed Oils from Roots & Richness?
             </h2>
-            <div className="prose prose-lg max-w-none text-neutral-medium">
-              <p>
-                At Roots and Richness, we specialize in premium wood-pressed oils and natural wellness products 
-                that are traditionally processed and sourced directly from farmers and tribal communities across India.
-              </p>
-              <p>
-                Our wood-pressed oils retain maximum nutrition as they are extracted using traditional wooden 
-                presses at room temperature, preserving essential nutrients, vitamins, and natural flavors that 
-                are often lost in commercial processing.
-              </p>
-              <h3 className="text-xl font-playfair font-semibold text-secondary mt-8 mb-4">
-                Our Product Categories
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+              <div className="space-y-6">
+                <h3 className="text-xl font-playfair font-semibold text-secondary">
+                  Traditional Wood-Pressing: The Ancient Art of Oil Extraction
+                </h3>
+                <div className="prose prose-lg max-w-none text-neutral-medium">
+                  <p>
+                    Our wood-pressed oils are extracted using traditional wooden presses (kolhus) that rotate slowly 
+                    at room temperature. This ancient method, practiced for centuries in Indian villages, preserves 
+                    essential nutrients, vitamins, and natural flavors that are often destroyed in commercial high-heat processing.
+                  </p>
+                  <p>
+                    Unlike refined oils that undergo chemical treatment, our wood-pressed oils retain their natural 
+                    color, aroma, and nutritional profile. Each drop carries the authentic taste and wellness benefits 
+                    that our ancestors knew and trusted.
+                  </p>
+                </div>
+              </div>
+              
+              <div className="space-y-6">
+                <h3 className="text-xl font-playfair font-semibold text-secondary">
+                  Direct from Source: Supporting Indian Farmers & Tribal Communities
+                </h3>
+                <div className="prose prose-lg max-w-none text-neutral-medium">
+                  <p>
+                    Every product at Roots & Richness comes directly from small-scale farmers and tribal communities 
+                    across India. From mustard farms in Rajasthan to groundnut fields in Gujarat, and coffee 
+                    plantations in Araku Valley, we build lasting partnerships that ensure fair prices and 
+                    sustainable livelihoods.
+                  </p>
+                  <p>
+                    When you choose our products, you're not just getting premium quality – you're supporting 
+                    traditional farming practices, preserving indigenous knowledge, and contributing to rural prosperity.
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="mt-12">
+              <h3 className="text-2xl font-playfair font-semibold text-secondary mb-6 text-center">
+                Our Complete Product Range
               </h3>
-              <ul className="space-y-2">
-                <li><strong>Wood-Pressed Oils:</strong> Coconut, Sesame, Groundnut, and more</li>
-                <li><strong>Natural Sweeteners:</strong> Raw honey, jaggery, and palm sugar</li>
-                <li><strong>Tribal Coffee:</strong> Directly sourced from hill tribes</li>
-                <li><strong>Wellness Products:</strong> Herbal teas, spices, and superfoods</li>
-              </ul>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {[
+                  {
+                    category: "Wood-Pressed Oils",
+                    items: ["Mustard Oil", "Groundnut Oil", "Sesame Oil", "Coconut Oil"],
+                    description: "Cold-pressed at room temperature for maximum nutrition retention"
+                  },
+                  {
+                    category: "Natural Sweeteners", 
+                    items: ["Raw Forest Honey", "Organic Jaggery", "Palm Sugar"],
+                    description: "Unprocessed sweeteners from trusted sources"
+                  },
+                  {
+                    category: "Tribal Coffee",
+                    items: ["Araku Arabica", "Single Origin", "Fair Trade"],
+                    description: "Ethically sourced from tribal farmers in Eastern Ghats"
+                  },
+                  {
+                    category: "Wellness Products",
+                    items: ["Herbal Teas", "Traditional Spices", "Ayurvedic Oils"],
+                    description: "Time-tested wellness solutions from nature"
+                  }
+                ].map((category, index) => (
+                  <div key={index} className="bg-white p-6 rounded-lg shadow-sm">
+                    <h4 className="font-playfair font-semibold text-secondary mb-3">{category.category}</h4>
+                    <ul className="space-y-1 mb-3">
+                      {category.items.map((item, idx) => (
+                        <li key={idx} className="text-sm text-neutral-medium">• {item}</li>
+                      ))}
+                    </ul>
+                    <p className="text-xs text-neutral-medium italic">{category.description}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </section>
