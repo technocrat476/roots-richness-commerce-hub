@@ -8,8 +8,6 @@ import { Separator } from '@/components/ui/separator';
 import { products } from '@/data/products';
 import { useCart } from '@/contexts/CartContext';
 import StickyCheckoutButton from '@/components/ui/StickyCheckoutButton';
-import PageSEO from '@/components/SEO/PageSEO';
-import Breadcrumbs from '@/components/ui/Breadcrumbs';
 
 const ProductDetail = () => {
   const { slug } = useParams();
@@ -54,56 +52,18 @@ const ProductDetail = () => {
     p.category === product.category && p.id !== product.id
   ).slice(0, 4);
 
-  // Breadcrumb items
-  const breadcrumbItems = [
-    { label: 'Home', href: '/' },
-    { label: 'Products', href: '/products' },
-    { label: product.name }
-  ];
-
-  // Product structured data
-  const productStructuredData = {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    "name": product.name,
-    "image": product.images,
-    "description": product.description,
-    "brand": {
-      "@type": "Brand",
-      "name": "Roots and Richness"
-    },
-    "offers": {
-      "@type": "Offer",
-      "price": product.price,
-      "priceCurrency": "INR",
-      "availability": product.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
-      "seller": {
-        "@type": "Organization",
-        "name": "Roots and Richness"
-      }
-    },
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "4.8",
-      "reviewCount": "48"
-    }
-  };
-
   return (
     <div className="min-h-screen bg-white">
-      <PageSEO 
-        title={`Buy ${product.name} Online | Premium Wood-Pressed Oil - Roots and Richness`}
-        description={`${product.description.substring(0, 150)}... Buy authentic ${product.name} online. Free shipping on orders over ₹500.`}
-        keywords={`${product.name}, buy ${product.name} online, wood-pressed oil, cold-pressed oil, natural oil, organic oil`}
-        canonicalUrl={`https://rootsandrichness.in/products/${product.slug}`}
-        ogType="product"
-        structuredData={productStructuredData}
-      />
-
       {/* Breadcrumb */}
       <div className="bg-neutral-light py-4">
         <div className="container mx-auto px-4">
-          <Breadcrumbs items={breadcrumbItems} />
+          <div className="flex items-center space-x-2 text-sm">
+            <Link to="/" className="text-neutral-medium hover:text-primary">Home</Link>
+            <span className="text-neutral-medium">/</span>
+            <Link to="/products" className="text-neutral-medium hover:text-primary">Products</Link>
+            <span className="text-neutral-medium">/</span>
+            <span className="text-secondary font-medium">{product.name}</span>
+          </div>
         </div>
       </div>
 
@@ -114,7 +74,7 @@ const ProductDetail = () => {
             <div className="relative aspect-square bg-neutral-light rounded-lg overflow-hidden">
               <img
                 src={product.images[0]}
-                alt={`${product.name} - Premium wood-pressed oil from Roots and Richness`}
+                alt={product.name}
                 className="w-full h-full object-cover"
               />
               {product.originalPrice && (
@@ -130,9 +90,8 @@ const ProductDetail = () => {
                 <div key={index} className="aspect-square bg-neutral-light rounded-lg overflow-hidden">
                   <img
                     src={image}
-                    alt={`${product.name} view ${index + 1} - Premium natural oil`}
+                    alt={`${product.name} ${index + 1}`}
                     className="w-full h-full object-cover cursor-pointer hover:opacity-80 transition-opacity"
-                    loading="lazy"
                   />
                 </div>
               ))}
@@ -152,7 +111,7 @@ const ProductDetail = () => {
 
             {/* Rating */}
             <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-1" role="img" aria-label="4.8 out of 5 stars">
+              <div className="flex items-center space-x-1">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <Star key={star} className="text-primary fill-current" size={20} />
                 ))}
@@ -190,7 +149,6 @@ const ProductDetail = () => {
                       variant={selectedSize === size ? "default" : "outline"}
                       onClick={() => setSelectedSize(size)}
                       className={selectedSize === size ? "btn-primary" : ""}
-                      aria-pressed={selectedSize === size}
                     >
                       {size}
                     </Button>
@@ -207,16 +165,14 @@ const ProductDetail = () => {
                   variant="outline"
                   size="sm"
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  aria-label="Decrease quantity"
                 >
                   -
                 </Button>
-                <span className="px-4 py-2 border border-gray-300 rounded" aria-label={`Quantity: ${quantity}`}>{quantity}</span>
+                <span className="px-4 py-2 border border-gray-300 rounded">{quantity}</span>
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => setQuantity(quantity + 1)}
-                  aria-label="Increase quantity"
                 >
                   +
                 </Button>
@@ -235,7 +191,7 @@ const ProductDetail = () => {
                   <ShoppingCart size={20} className="mr-2" />
                   Add to Cart
                 </Button>
-                <Button variant="outline" size="lg" aria-label="Add to wishlist">
+                <Button variant="outline" size="lg">
                   <Heart size={20} />
                 </Button>
               </div>
@@ -335,9 +291,8 @@ const ProductDetail = () => {
                   <div className="relative overflow-hidden rounded-t-lg">
                     <img
                       src={relatedProduct.images[0]}
-                      alt={`${relatedProduct.name} - Premium natural oil from Roots and Richness`}
+                      alt={relatedProduct.name}
                       className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                      loading="lazy"
                     />
                   </div>
                   <CardContent className="p-4">

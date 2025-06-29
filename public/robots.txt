@@ -1,11 +1,8 @@
-
 User-agent: Googlebot
 Allow: /
-Crawl-delay: 1
 
 User-agent: Bingbot
 Allow: /
-Crawl-delay: 1
 
 User-agent: Twitterbot
 Allow: /
@@ -15,16 +12,3 @@ Allow: /
 
 User-agent: *
 Allow: /
-Allow: /products/
-Allow: /about
-Allow: /contact
-Allow: /blog/
-Allow: /policies/
-Disallow: /admin/
-Disallow: /cart
-Disallow: /checkout
-Disallow: /api/
-Crawl-delay: 2
-
-# Sitemap location
-Sitemap: https://rootsandrichness.in/sitemap.xml
