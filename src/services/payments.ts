@@ -34,6 +34,50 @@ export interface PhonePePaymentData {
   };
 }
 
+// API Response interfaces
+export interface RazorpayOrderResponse {
+  id: string;
+  amount: number;
+  currency: string;
+  receipt: string;
+  status: string;
+}
+
+export interface PhonePeInitiateResponse {
+  success: boolean;
+  code: string;
+  message: string;
+  data?: {
+    merchantId: string;
+    merchantTransactionId: string;
+    instrumentResponse?: {
+      type: string;
+      redirectInfo?: {
+        url: string;
+        method: string;
+      };
+    };
+  };
+}
+
+export interface PhonePeStatusResponse {
+  success: boolean;
+  code: string;
+  message: string;
+  data?: {
+    merchantId: string;
+    merchantTransactionId: string;
+    transactionId: string;
+    amount: number;
+    state: string;
+    responseCode: string;
+    paymentInstrument?: {
+      type: string;
+      utr?: string;
+    };
+  };
+}
+
 export type PaymentProvider = 'razorpay' | 'phonepe';
 
 // Initialize Razorpay SDK
@@ -63,7 +107,7 @@ export const processRazorpayPayment = async (
 
   try {
     // Create order via API
-    const order = await apiClient.createRazorpayOrder(paymentData);
+    const order = await apiClient.createRazorpayOrder(paymentData) as RazorpayOrderResponse;
 
     const options = {
       key: import.meta.env.VITE_RAZORPAY_KEY_ID,
@@ -111,7 +155,7 @@ export const processPhonePePayment = async (
 ) => {
   try {
     // Initiate PhonePe payment via API
-    const response = await apiClient.initiatePhonePePayment(paymentData);
+    const response = await apiClient.initiatePhonePePayment(paymentData) as PhonePeInitiateResponse;
     
     if (response.success && response.data?.instrumentResponse?.redirectInfo?.url) {
       // Redirect to PhonePe payment page
@@ -125,9 +169,9 @@ export const processPhonePePayment = async (
 };
 
 // Check PhonePe payment status
-export const checkPhonePePaymentStatus = async (transactionId: string) => {
+export const checkPhonePePaymentStatus = async (transactionId: string): Promise<PhonePeStatusResponse> => {
   try {
-    const response = await apiClient.checkPhonePeStatus(transactionId);
+    const response = await apiClient.checkPhonePeStatus(transactionId) as PhonePeStatusResponse;
     return response;
   } catch (error) {
     console.error('Error checking PhonePe status:', error);
