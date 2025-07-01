@@ -1,14 +1,14 @@
-
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, CreditCard, Truck, Shield } from 'lucide-react';
+import { ArrowLeft, CreditCard, Truck, Shield, Smartphone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useCart } from '@/contexts/CartContext';
-import { processPayment } from '@/services/razorpay';
+import { processPayment, PaymentProvider } from '@/services/payments';
 import { useToast } from '@/hooks/use-toast';
 
 const Checkout = () => {
@@ -16,6 +16,7 @@ const Checkout = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isProcessing, setIsProcessing] = useState(false);
+  const [paymentProvider, setPaymentProvider] = useState<PaymentProvider>('razorpay');
   const [formData, setFormData] = useState({
     email: '',
     firstName: '',
@@ -67,16 +68,9 @@ const Checkout = () => {
     setIsProcessing(true);
 
     try {
-      const paymentData = {
-        amount: total * 100, // Razorpay expects amount in paise
-        currency: 'INR',
-        receipt: `receipt_${Date.now()}`,
-        notes: {
-          customerName: `${formData.firstName} ${formData.lastName}`,
-          customerEmail: formData.email,
-          itemCount: state.itemCount
-        }
-      };
+      const subtotal = state.total;
+      const tax = Math.round(subtotal * 0.18);
+      const total = subtotal + tax;
 
       const customerData = {
         name: `${formData.firstName} ${formData.lastName}`,
@@ -84,42 +78,93 @@ const Checkout = () => {
         contact: formData.phone
       };
 
-      await processPayment(
-        paymentData,
-        customerData,
-        (response) => {
-          // Payment successful
-          const orderData = {
-            orderId: response.razorpay_order_id,
-            paymentId: response.razorpay_payment_id,
-            items: state.items,
-            subtotal: subtotal,
-            tax: tax,
-            total: total,
-            customerInfo: formData
-          };
+      if (paymentProvider === 'razorpay') {
+        const paymentData = {
+          amount: total * 100, // Razorpay expects amount in paise
+          currency: 'INR',
+          receipt: `receipt_${Date.now()}`,
+          notes: {
+            customerName: customerData.name,
+            customerEmail: formData.email,
+            itemCount: state.itemCount
+          }
+        };
 
-          // Clear cart
-          dispatch({ type: 'CLEAR_CART' });
+        await processPayment(
+          'razorpay',
+          paymentData,
+          customerData,
+          (response) => {
+            const orderData = {
+              orderId: response.razorpay_order_id,
+              paymentId: response.razorpay_payment_id,
+              paymentProvider: 'razorpay',
+              items: state.items,
+              subtotal: subtotal,
+              tax: tax,
+              total: total,
+              customerInfo: formData
+            };
 
-          // Navigate to order confirmation
-          navigate('/order-confirmation', { state: { orderData } });
+            dispatch({ type: 'CLEAR_CART' });
+            navigate('/order-confirmation', { state: { orderData } });
 
-          toast({
-            title: "Payment Successful!",
-            description: "Your order has been placed successfully.",
-          });
-        },
-        (error) => {
-          // Payment failed
-          console.error('Payment error:', error);
-          toast({
-            title: "Payment Failed",
-            description: "There was an issue processing your payment. Please try again.",
-            variant: "destructive",
-          });
-        }
-      );
+            toast({
+              title: "Payment Successful!",
+              description: "Your order has been placed successfully.",
+            });
+          },
+          (error) => {
+            console.error('Razorpay payment error:', error);
+            toast({
+              title: "Payment Failed",
+              description: "There was an issue processing your payment. Please try again.",
+              variant: "destructive",
+            });
+          }
+        );
+      } else if (paymentProvider === 'phonepe') {
+        const merchantTransactionId = `TXN_${Date.now()}`;
+        const phonePeData = {
+          amount: total * 100, // PhonePe expects amount in paise
+          merchantTransactionId,
+          merchantUserId: formData.email,
+          redirectUrl: `${window.location.origin}/order-confirmation`,
+          redirectMode: 'POST',
+          callbackUrl: `${window.location.origin}/api/payments/phonepe/callback`,
+          mobileNumber: formData.phone,
+          paymentInstrument: {
+            type: 'PAY_PAGE'
+          }
+        };
+
+        await processPayment(
+          'phonepe',
+          phonePeData,
+          customerData,
+          (response) => {
+            // PhonePe will redirect, so we store order data in localStorage
+            const orderData = {
+              orderId: merchantTransactionId,
+              paymentProvider: 'phonepe',
+              items: state.items,
+              subtotal: subtotal,
+              tax: tax,
+              total: total,
+              customerInfo: formData
+            };
+            localStorage.setItem('pendingOrder', JSON.stringify(orderData));
+          },
+          (error) => {
+            console.error('PhonePe payment error:', error);
+            toast({
+              title: "Payment Failed",
+              description: "There was an issue processing your payment. Please try again.",
+              variant: "destructive",
+            });
+          }
+        );
+      }
     } catch (error) {
       console.error('Payment processing error:', error);
       toast({
@@ -269,18 +314,33 @@ const Checkout = () => {
                 <CardTitle className="font-playfair">Payment Method</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center space-x-3 p-4 border border-primary rounded-lg bg-primary/5">
-                    <CreditCard className="text-primary" size={20} />
-                    <div>
-                      <div className="font-medium">Razorpay</div>
-                      <div className="text-sm text-neutral-medium">Secure payment gateway</div>
+                <RadioGroup value={paymentProvider} onValueChange={(value: PaymentProvider) => setPaymentProvider(value)}>
+                  <div className="space-y-4">
+                    <div className="flex items-center space-x-3 p-4 border border-primary rounded-lg bg-primary/5">
+                      <RadioGroupItem value="razorpay" id="razorpay" />
+                      <CreditCard className="text-primary" size={20} />
+                      <div className="flex-1">
+                        <Label htmlFor="razorpay" className="font-medium cursor-pointer">Razorpay</Label>
+                        <div className="text-sm text-neutral-medium">Credit/Debit Cards, UPI, Net Banking, Wallets</div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center space-x-3 p-4 border border-neutral-light rounded-lg hover:border-primary transition-colors">
+                      <RadioGroupItem value="phonepe" id="phonepe" />
+                      <Smartphone className="text-purple-600" size={20} />
+                      <div className="flex-1">
+                        <Label htmlFor="phonepe" className="font-medium cursor-pointer">PhonePe</Label>
+                        <div className="text-sm text-neutral-medium">UPI, Digital Wallets, Cards</div>
+                      </div>
                     </div>
                   </div>
-                  
-                  <div className="text-sm text-neutral-medium">
-                    Supports all major payment methods including credit/debit cards, UPI, net banking, and wallets.
-                  </div>
+                </RadioGroup>
+                
+                <div className="text-sm text-neutral-medium mt-4">
+                  {paymentProvider === 'razorpay' 
+                    ? 'Secure payment processing with multiple payment options including international cards.'
+                    : 'Fast and secure UPI payments with PhonePe. Supports all major UPI apps and digital wallets.'
+                  }
                 </div>
               </CardContent>
             </Card>
