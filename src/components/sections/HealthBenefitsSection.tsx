@@ -2,7 +2,7 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Brain, Heart, Flame, Soap, Hair, Bottle } from 'lucide-react';
+import { Brain, Heart, Flame, Droplets, User, Sparkles } from 'lucide-react';
 
 const HealthBenefitsSection = () => {
   const benefits = [
@@ -25,19 +25,19 @@ const HealthBenefitsSection = () => {
       keywords: "high smoke point, Indian cooking, frying"
     },
     {
-      icon: Soap,
+      icon: Droplets,
       title: "Easy to Digest",
       description: "Unrefined oils aid digestion and improve liver function",
       keywords: "digestive health, liver function, unrefined oils"
     },
     {
-      icon: Hair,
+      icon: User,
       title: "Promotes Hair Growth",
       description: "Strengthens hair roots and reduces hair fall when applied regularly",
       keywords: "hair care, hair growth, scalp health"
     },
     {
-      icon: Bottle,
+      icon: Sparkles,
       title: "Nourishes the Skin",
       description: "Anti-inflammatory and moisturizing properties keep skin soft and clear",
       keywords: "skin care, anti-inflammatory, moisturizing"
