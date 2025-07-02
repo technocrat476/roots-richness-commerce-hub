@@ -1,4 +1,3 @@
-
 import { Link } from 'react-router-dom';
 import { ArrowRight, ShoppingCart, Star, Truck, Shield, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -7,6 +6,7 @@ import { products } from '@/data/products';
 import { useCart } from '@/contexts/CartContext';
 import AutoplayHero from '@/components/ui/AutoplayHero';
 import PageSEO from '@/components/SEO/PageSEO';
+import HealthBenefitsSection from '@/components/sections/HealthBenefitsSection';
 
 const Index = () => {
   const { dispatch } = useCart();
@@ -123,6 +123,9 @@ const Index = () => {
           </div>
         </section>
 
+        {/* Health Benefits Section - Replacing Product Stories */}
+        <HealthBenefitsSection />
+
         {/* Product Highlights Section */}
         <section id="product-highlights" className="py-20 bg-white">
           <div className="container mx-auto px-4">
@@ -133,60 +136,6 @@ const Index = () => {
               <p className="text-lg text-neutral-medium max-w-2xl mx-auto">
                 Handpicked premium products that bring the best of nature's goodness to your doorstep
               </p>
-            </div>
-
-            {/* Featured Product Stories */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-              <article className="bg-neutral-light rounded-lg p-8 shadow-lg hover:shadow-xl transition-shadow">
-                <h3 className="text-2xl font-playfair font-semibold text-secondary mb-4">
-                  Wood-Pressed Mustard Oil – Bold & Unrefined
-                </h3>
-                <p className="text-neutral-medium mb-6 leading-relaxed">
-                  Bold flavor, high heat tolerance, and 100% unrefined — perfect for traditional Indian cooking. Sourced from mustard farms in Rajasthan where farmers have perfected the art of oil pressing for generations.
-                </p>
-                <ul className="space-y-2 mb-6 text-sm text-neutral-medium">
-                  <li className="flex items-center"><span className="w-2 h-2 bg-primary rounded-full mr-3"></span>Rich in omega-3 fatty acids</li>
-                  <li className="flex items-center"><span className="w-2 h-2 bg-primary rounded-full mr-3"></span>High smoke point for deep frying</li>
-                  <li className="flex items-center"><span className="w-2 h-2 bg-primary rounded-full mr-3"></span>Natural antibacterial properties</li>
-                </ul>
-                <Link to="/products/wood-pressed-mustard-oil">
-                  <Button className="btn-primary w-full">Shop Now</Button>
-                </Link>
-              </article>
-
-              <article className="bg-neutral-light rounded-lg p-8 shadow-lg hover:shadow-xl transition-shadow">
-                <h3 className="text-2xl font-playfair font-semibold text-secondary mb-4">
-                  Cold-Pressed Groundnut Oil – Heart Healthy Choice
-                </h3>
-                <p className="text-neutral-medium mb-6 leading-relaxed">
-                  Rich in antioxidants and great for everyday cooking. Cold-pressed and chemical-free, sourced directly from Gujarat's small-batch farms where peanuts are grown in mineral-rich soil.
-                </p>
-                <ul className="space-y-2 mb-6 text-sm text-neutral-medium">
-                  <li className="flex items-center"><span className="w-2 h-2 bg-primary rounded-full mr-3"></span>Heart-healthy monounsaturated fats</li>
-                  <li className="flex items-center"><span className="w-2 h-2 bg-primary rounded-full mr-3"></span>Ideal for oil pulling routines</li>
-                  <li className="flex items-center"><span className="w-2 h-2 bg-primary rounded-full mr-3"></span>Natural vitamin E source</li>
-                </ul>
-                <Link to="/products/cold-pressed-groundnut-oil">
-                  <Button className="btn-primary w-full">Shop Now</Button>
-                </Link>
-              </article>
-
-              <article className="bg-neutral-light rounded-lg p-8 shadow-lg hover:shadow-xl transition-shadow">
-                <h3 className="text-2xl font-playfair font-semibold text-secondary mb-4">
-                  Arabica Coffee from Araku – Tribal Excellence
-                </h3>
-                <p className="text-neutral-medium mb-6 leading-relaxed">
-                  Grown by tribal farmers in Araku Valley, our coffee is bold, ethical, and aromatic. Meet Kamla Devi and her community who have been cultivating coffee in the Eastern Ghats for generations.
-                </p>
-                <ul className="space-y-2 mb-6 text-sm text-neutral-medium">
-                  <li className="flex items-center"><span className="w-2 h-2 bg-primary rounded-full mr-3"></span>Single-origin Arabica beans</li>
-                  <li className="flex items-center"><span className="w-2 h-2 bg-primary rounded-full mr-3"></span>Fair trade with tribal farmers</li>
-                  <li className="flex items-center"><span className="w-2 h-2 bg-primary rounded-full mr-3"></span>Grown at 3000+ feet elevation</li>
-                </ul>
-                <Link to="/products/araku-arabica-coffee">
-                  <Button className="btn-primary w-full">Learn More</Button>
-                </Link>
-              </article>
             </div>
 
             {/* Featured Products Grid */}
