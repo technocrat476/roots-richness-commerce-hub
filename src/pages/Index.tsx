@@ -1,6 +1,5 @@
-
 import { Link } from 'react-router-dom';
-import { ArrowRight, ShoppingCart, Star, Truck, Shield, Phone } from 'lucide-react';
+import { ArrowRight, ShoppingCart, Star, Truck, Shield, Phone, Brain, Heart, Flame, Droplet, User, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { products } from '@/data/products';
@@ -123,8 +122,118 @@ const Index = () => {
           </div>
         </section>
 
-        {/* Product Highlights Section */}
-        <section id="product-highlights" className="py-20 bg-white">
+        {/* Health Benefits Section - New */}
+        <section id="health-benefits" className="py-20 bg-white">
+          <div className="container mx-auto px-4">
+            <div className="text-center space-y-4 mb-16">
+              <h2 className="text-3xl lg:text-4xl font-playfair font-bold text-secondary flex items-center justify-center gap-3">
+                <span className="text-4xl">🥥</span>
+                Health Benefits of Wood-Pressed Oils
+              </h2>
+              <p className="text-lg text-neutral-medium max-w-3xl mx-auto leading-relaxed">
+                Naturally extracted using traditional wooden presses, our oils retain essential nutrients, flavor, and aroma—making them a healthier choice for your daily meals.
+              </p>
+              <div className="max-w-4xl mx-auto text-neutral-medium">
+                <p className="leading-relaxed">
+                  Wood-pressed oils, also known as cold-pressed or kachi ghani oils, are extracted at low temperatures without any chemicals or refining. This method preserves vital nutrients and antioxidants that offer real health benefits.
+                </p>
+              </div>
+            </div>
+
+            {/* Benefits Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+              <Card className="text-center hover:shadow-lg transition-shadow duration-300 bg-neutral-light">
+                <CardContent className="p-8">
+                  <Brain className="w-12 h-12 text-primary mx-auto mb-4" />
+                  <h3 className="text-xl font-playfair font-semibold text-secondary mb-3">
+                    Supports Brain Health
+                  </h3>
+                  <p className="text-neutral-medium leading-relaxed">
+                    Rich in Omega-3 and Vitamin E, wood-pressed oils support cognitive health and memory function naturally.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="text-center hover:shadow-lg transition-shadow duration-300 bg-neutral-light">
+                <CardContent className="p-8">
+                  <Heart className="w-12 h-12 text-accent mx-auto mb-4" />
+                  <h3 className="text-xl font-playfair font-semibold text-secondary mb-3">
+                    Boosts Heart Health
+                  </h3>
+                  <p className="text-neutral-medium leading-relaxed">
+                    Contains good unsaturated fats that help maintain healthy cholesterol levels and cardiovascular function.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="text-center hover:shadow-lg transition-shadow duration-300 bg-neutral-light">
+                <CardContent className="p-8">
+                  <Flame className="w-12 h-12 text-primary mx-auto mb-4" />
+                  <h3 className="text-xl font-playfair font-semibold text-secondary mb-3">
+                    High Smoke Point
+                  </h3>
+                  <p className="text-neutral-medium leading-relaxed">
+                    Ideal for Indian cooking styles like tadka, frying, and sautéing without breaking down or losing nutrients.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="text-center hover:shadow-lg transition-shadow duration-300 bg-neutral-light">
+                <CardContent className="p-8">
+                  <Droplet className="w-12 h-12 text-accent mx-auto mb-4" />
+                  <h3 className="text-xl font-playfair font-semibold text-secondary mb-3">
+                    Easy to Digest
+                  </h3>
+                  <p className="text-neutral-medium leading-relaxed">
+                    Unrefined cold-pressed oils aid digestion and improve liver function, supporting overall gut health.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="text-center hover:shadow-lg transition-shadow duration-300 bg-neutral-light">
+                <CardContent className="p-8">
+                  <User className="w-12 h-12 text-primary mx-auto mb-4" />
+                  <h3 className="text-xl font-playfair font-semibold text-secondary mb-3">
+                    Promotes Hair Growth
+                  </h3>
+                  <p className="text-neutral-medium leading-relaxed">
+                    Strengthens hair roots and reduces hair fall when applied regularly, thanks to natural nutrients.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="text-center hover:shadow-lg transition-shadow duration-300 bg-neutral-light">
+                <CardContent className="p-8">
+                  <Sparkles className="w-12 h-12 text-accent mx-auto mb-4" />
+                  <h3 className="text-xl font-playfair font-semibold text-secondary mb-3">
+                    Nourishes the Skin
+                  </h3>
+                  <p className="text-neutral-medium leading-relaxed">
+                    Anti-inflammatory and moisturizing properties keep skin soft, clear, and naturally hydrated.
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link to="/products">
+                <Button size="lg" className="btn-primary">
+                  Explore Our Oils
+                  <ArrowRight className="ml-2" size={20} />
+                </Button>
+              </Link>
+              <Link to="/about">
+                <Button size="lg" variant="outline" className="btn-outline">
+                  Learn the Wood-Pressed Method
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* Featured Products Grid */}
+        <section id="featured-products" className="py-20 bg-neutral-light">
           <div className="container mx-auto px-4">
             <div className="text-center space-y-4 mb-16">
               <h2 className="text-3xl lg:text-4xl font-playfair font-bold text-secondary">
@@ -135,61 +244,6 @@ const Index = () => {
               </p>
             </div>
 
-            {/* Featured Product Stories */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-              <article className="bg-neutral-light rounded-lg p-8 shadow-lg hover:shadow-xl transition-shadow">
-                <h3 className="text-2xl font-playfair font-semibold text-secondary mb-4">
-                  Wood-Pressed Mustard Oil – Bold & Unrefined
-                </h3>
-                <p className="text-neutral-medium mb-6 leading-relaxed">
-                  Bold flavor, high heat tolerance, and 100% unrefined — perfect for traditional Indian cooking. Sourced from mustard farms in Rajasthan where farmers have perfected the art of oil pressing for generations.
-                </p>
-                <ul className="space-y-2 mb-6 text-sm text-neutral-medium">
-                  <li className="flex items-center"><span className="w-2 h-2 bg-primary rounded-full mr-3"></span>Rich in omega-3 fatty acids</li>
-                  <li className="flex items-center"><span className="w-2 h-2 bg-primary rounded-full mr-3"></span>High smoke point for deep frying</li>
-                  <li className="flex items-center"><span className="w-2 h-2 bg-primary rounded-full mr-3"></span>Natural antibacterial properties</li>
-                </ul>
-                <Link to="/products/wood-pressed-mustard-oil">
-                  <Button className="btn-primary w-full">Shop Now</Button>
-                </Link>
-              </article>
-
-              <article className="bg-neutral-light rounded-lg p-8 shadow-lg hover:shadow-xl transition-shadow">
-                <h3 className="text-2xl font-playfair font-semibold text-secondary mb-4">
-                  Cold-Pressed Groundnut Oil – Heart Healthy Choice
-                </h3>
-                <p className="text-neutral-medium mb-6 leading-relaxed">
-                  Rich in antioxidants and great for everyday cooking. Cold-pressed and chemical-free, sourced directly from Gujarat's small-batch farms where peanuts are grown in mineral-rich soil.
-                </p>
-                <ul className="space-y-2 mb-6 text-sm text-neutral-medium">
-                  <li className="flex items-center"><span className="w-2 h-2 bg-primary rounded-full mr-3"></span>Heart-healthy monounsaturated fats</li>
-                  <li className="flex items-center"><span className="w-2 h-2 bg-primary rounded-full mr-3"></span>Ideal for oil pulling routines</li>
-                  <li className="flex items-center"><span className="w-2 h-2 bg-primary rounded-full mr-3"></span>Natural vitamin E source</li>
-                </ul>
-                <Link to="/products/cold-pressed-groundnut-oil">
-                  <Button className="btn-primary w-full">Shop Now</Button>
-                </Link>
-              </article>
-
-              <article className="bg-neutral-light rounded-lg p-8 shadow-lg hover:shadow-xl transition-shadow">
-                <h3 className="text-2xl font-playfair font-semibold text-secondary mb-4">
-                  Arabica Coffee from Araku – Tribal Excellence
-                </h3>
-                <p className="text-neutral-medium mb-6 leading-relaxed">
-                  Grown by tribal farmers in Araku Valley, our coffee is bold, ethical, and aromatic. Meet Kamla Devi and her community who have been cultivating coffee in the Eastern Ghats for generations.
-                </p>
-                <ul className="space-y-2 mb-6 text-sm text-neutral-medium">
-                  <li className="flex items-center"><span className="w-2 h-2 bg-primary rounded-full mr-3"></span>Single-origin Arabica beans</li>
-                  <li className="flex items-center"><span className="w-2 h-2 bg-primary rounded-full mr-3"></span>Fair trade with tribal farmers</li>
-                  <li className="flex items-center"><span className="w-2 h-2 bg-primary rounded-full mr-3"></span>Grown at 3000+ feet elevation</li>
-                </ul>
-                <Link to="/products/araku-arabica-coffee">
-                  <Button className="btn-primary w-full">Learn More</Button>
-                </Link>
-              </article>
-            </div>
-
-            {/* Featured Products Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {featuredProducts.map((product, index) => (
                 <Card key={product.id} className="group hover:shadow-xl transition-all duration-300 animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
@@ -266,7 +320,7 @@ const Index = () => {
         </section>
 
         {/* Enhanced Testimonials Section */}
-        <section id="testimonials" className="py-20 bg-neutral-light">
+        <section id="testimonials" className="py-20 bg-white">
           <div className="container mx-auto px-4">
             <div className="text-center space-y-4 mb-12">
               <h2 className="text-3xl lg:text-4xl font-playfair font-bold text-secondary">
