@@ -34,6 +34,14 @@ export interface PhonePePaymentData {
   };
 }
 
+export interface UPIPaymentData {
+  amount: number;
+  currency: string;
+  merchantTransactionId: string;
+  customerData: CustomerData;
+  upiId?: string;
+}
+
 // API Response interfaces
 export interface RazorpayOrderResponse {
   id: string;
@@ -78,7 +86,15 @@ export interface PhonePeStatusResponse {
   };
 }
 
-export type PaymentProvider = 'razorpay' | 'phonepe';
+export interface UPIPaymentResponse {
+  success: boolean;
+  transactionId: string;
+  upiRefId: string;
+  amount: number;
+  status: 'SUCCESS' | 'PENDING' | 'FAILED';
+}
+
+export type PaymentProvider = 'razorpay' | 'phonepe' | 'upi' | 'cod';
 
 // Initialize Razorpay SDK
 export const initializeRazorpay = () => {
@@ -91,12 +107,13 @@ export const initializeRazorpay = () => {
   });
 };
 
-// Razorpay payment processing
+// Razorpay payment processing with UPI support
 export const processRazorpayPayment = async (
   paymentData: PaymentData,
   customerData: CustomerData,
   onSuccess: (response: any) => void,
-  onError: (error: any) => void
+  onError: (error: any) => void,
+  preferUPI: boolean = false
 ) => {
   const res = await initializeRazorpay();
 
@@ -116,6 +133,13 @@ export const processRazorpayPayment = async (
       name: 'Roots and Richness',
       description: 'Natural Wood-Pressed Oils & Wellness Products',
       order_id: order.id,
+      method: preferUPI ? {
+        upi: true,
+        card: false,
+        netbanking: false,
+        wallet: false,
+        emi: false
+      } : undefined,
       handler: async (response: any) => {
         try {
           // Verify payment
@@ -168,6 +192,68 @@ export const processPhonePePayment = async (
   }
 };
 
+// UPI payment processing
+export const processUPIPayment = async (
+  paymentData: UPIPaymentData,
+  onSuccess: (response: UPIPaymentResponse) => void,
+  onError: (error: any) => void
+) => {
+  try {
+    // In a real implementation, this would use a UPI payment gateway
+    // For now, we'll simulate the UPI payment process
+    
+    const transactionId = `UPI_${Date.now()}`;
+    const upiRefId = `${transactionId}_REF`;
+    
+    // Simulate payment processing
+    setTimeout(() => {
+      // Simulate success/failure (90% success rate for demo)
+      const success = Math.random() > 0.1;
+      
+      if (success) {
+        onSuccess({
+          success: true,
+          transactionId,
+          upiRefId,
+          amount: paymentData.amount,
+          status: 'SUCCESS'
+        });
+      } else {
+        onError('UPI payment failed. Please try again.');
+      }
+    }, 2000);
+    
+  } catch (error) {
+    onError(error);
+  }
+};
+
+// Cash on Delivery processing
+export const processCODPayment = async (
+  orderData: any,
+  onSuccess: (response: any) => void,
+  onError: (error: any) => void
+) => {
+  try {
+    // Add COD charges (₹50)
+    const codCharges = 50;
+    const totalWithCOD = orderData.total + codCharges;
+    
+    const orderResponse = {
+      success: true,
+      orderId: `COD_${Date.now()}`,
+      paymentMethod: 'Cash on Delivery',
+      total: totalWithCOD,
+      codCharges,
+      status: 'ORDER_PLACED'
+    };
+    
+    onSuccess(orderResponse);
+  } catch (error) {
+    onError(error);
+  }
+};
+
 // Check PhonePe payment status
 export const checkPhonePePaymentStatus = async (transactionId: string): Promise<PhonePeStatusResponse> => {
   try {
@@ -192,7 +278,31 @@ export const processPayment = async (
       return processRazorpayPayment(paymentData, customerData, onSuccess, onError);
     case 'phonepe':
       return processPhonePePayment(paymentData, onSuccess, onError);
+    case 'upi':
+      return processRazorpayPayment(paymentData, customerData, onSuccess, onError, true); // Use Razorpay with UPI preference
+    case 'cod':
+      return processCODPayment(paymentData, onSuccess, onError);
     default:
       onError('Invalid payment provider');
+  }
+};
+
+// Webhook handler for payment verification
+export const handlePaymentWebhook = async (webhookData: any) => {
+  try {
+    // This would be implemented on the backend
+    // Frontend just needs to handle the response
+    console.log('Payment webhook received:', webhookData);
+    
+    // Verify webhook signature and process payment confirmation
+    return {
+      success: true,
+      orderId: webhookData.orderId,
+      paymentId: webhookData.paymentId,
+      status: webhookData.status
+    };
+  } catch (error) {
+    console.error('Webhook processing error:', error);
+    throw error;
   }
 };

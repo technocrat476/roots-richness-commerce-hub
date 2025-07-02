@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, CreditCard, Truck, Shield, Smartphone } from 'lucide-react';
+import { ArrowLeft, Truck, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useCart } from '@/contexts/CartContext';
 import { processPayment, PaymentProvider } from '@/services/payments';
+import PaymentMethodSelector from '@/components/payment/PaymentMethodSelector';
+import UPIPayment from '@/components/payment/UPIPayment';
 import { useToast } from '@/hooks/use-toast';
 
 const Checkout = () => {
@@ -16,7 +17,8 @@ const Checkout = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isProcessing, setIsProcessing] = useState(false);
-  const [paymentProvider, setPaymentProvider] = useState<PaymentProvider>('razorpay');
+  const [paymentProvider, setPaymentProvider] = useState<PaymentProvider | 'upi' | 'cod'>('upi');
+  const [showUPIPayment, setShowUPIPayment] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     firstName: '',
@@ -62,15 +64,26 @@ const Checkout = () => {
     return true;
   };
 
+  const calculateTotals = () => {
+    const subtotal = state.total;
+    const tax = Math.round(subtotal * 0.18);
+    const codCharges = paymentProvider === 'cod' ? 50 : 0;
+    const total = subtotal + tax + codCharges;
+    return { subtotal, tax, codCharges, total };
+  };
+
   const handlePayment = async () => {
     if (!validateForm()) return;
+    
+    if (paymentProvider === 'upi') {
+      setShowUPIPayment(true);
+      return;
+    }
     
     setIsProcessing(true);
 
     try {
-      const subtotal = state.total;
-      const tax = Math.round(subtotal * 0.18);
-      const total = subtotal + tax;
+      const { subtotal, tax, total } = calculateTotals();
 
       const customerData = {
         name: `${formData.firstName} ${formData.lastName}`,
@@ -78,7 +91,42 @@ const Checkout = () => {
         contact: formData.phone
       };
 
-      if (paymentProvider === 'razorpay') {
+      if (paymentProvider === 'cod') {
+        await processPayment(
+          'cod',
+          { total, items: state.items, customerInfo: formData },
+          customerData,
+          (response) => {
+            const orderData = {
+              orderId: response.orderId,
+              paymentId: 'COD',
+              paymentProvider: 'cod',
+              items: state.items,
+              subtotal: subtotal,
+              tax: tax,
+              codCharges: 50,
+              total: response.total,
+              customerInfo: formData
+            };
+
+            dispatch({ type: 'CLEAR_CART' });
+            navigate('/order-confirmation', { state: { orderData } });
+
+            toast({
+              title: "Order Placed Successfully!",
+              description: "Your order will be delivered within 3-5 business days.",
+            });
+          },
+          (error) => {
+            console.error('COD order error:', error);
+            toast({
+              title: "Order Failed",
+              description: "There was an issue placing your order. Please try again.",
+              variant: "destructive",
+            });
+          }
+        );
+      } else if (paymentProvider === 'razorpay') {
         const paymentData = {
           amount: total * 100, // Razorpay expects amount in paise
           currency: 'INR',
@@ -177,9 +225,56 @@ const Checkout = () => {
     }
   };
 
-  const subtotal = state.total;
-  const tax = Math.round(subtotal * 0.18);
-  const total = subtotal + tax;
+  const handleUPISuccess = (paymentData: any) => {
+    const { subtotal, tax, total } = calculateTotals();
+    
+    const orderData = {
+      orderId: paymentData.transactionId,
+      paymentId: paymentData.upiRefId,
+      paymentProvider: 'upi',
+      items: state.items,
+      subtotal: subtotal,
+      tax: tax,
+      total: total,
+      customerInfo: formData
+    };
+
+    dispatch({ type: 'CLEAR_CART' });
+    navigate('/order-confirmation', { state: { orderData } });
+
+    toast({
+      title: "Payment Successful!",
+      description: `Payment completed via UPI. Ref ID: ${paymentData.upiRefId}`,
+    });
+  };
+
+  const handleUPIError = (error: string) => {
+    setShowUPIPayment(false);
+    toast({
+      title: "UPI Payment Failed",
+      description: error,
+      variant: "destructive",
+    });
+  };
+
+  const handleUPICancel = () => {
+    setShowUPIPayment(false);
+  };
+
+  const { subtotal, tax, codCharges, total } = calculateTotals();
+
+  if (showUPIPayment) {
+    return (
+      <div className="min-h-screen bg-neutral-light flex items-center justify-center p-4">
+        <UPIPayment
+          amount={total}
+          onSuccess={handleUPISuccess}
+          onError={handleUPIError}
+          onCancel={handleUPICancel}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-neutral-light">
@@ -314,34 +409,10 @@ const Checkout = () => {
                 <CardTitle className="font-playfair">Payment Method</CardTitle>
               </CardHeader>
               <CardContent>
-                <RadioGroup value={paymentProvider} onValueChange={(value: PaymentProvider) => setPaymentProvider(value)}>
-                  <div className="space-y-4">
-                    <div className="flex items-center space-x-3 p-4 border border-primary rounded-lg bg-primary/5">
-                      <RadioGroupItem value="razorpay" id="razorpay" />
-                      <CreditCard className="text-primary" size={20} />
-                      <div className="flex-1">
-                        <Label htmlFor="razorpay" className="font-medium cursor-pointer">Razorpay</Label>
-                        <div className="text-sm text-neutral-medium">Credit/Debit Cards, UPI, Net Banking, Wallets</div>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center space-x-3 p-4 border border-neutral-light rounded-lg hover:border-primary transition-colors">
-                      <RadioGroupItem value="phonepe" id="phonepe" />
-                      <Smartphone className="text-purple-600" size={20} />
-                      <div className="flex-1">
-                        <Label htmlFor="phonepe" className="font-medium cursor-pointer">PhonePe</Label>
-                        <div className="text-sm text-neutral-medium">UPI, Digital Wallets, Cards</div>
-                      </div>
-                    </div>
-                  </div>
-                </RadioGroup>
-                
-                <div className="text-sm text-neutral-medium mt-4">
-                  {paymentProvider === 'razorpay' 
-                    ? 'Secure payment processing with multiple payment options including international cards.'
-                    : 'Fast and secure UPI payments with PhonePe. Supports all major UPI apps and digital wallets.'
-                  }
-                </div>
+                <PaymentMethodSelector
+                  selectedMethod={paymentProvider}
+                  onMethodChange={(method) => setPaymentProvider(method as PaymentProvider | 'upi' | 'cod')}
+                />
               </CardContent>
             </Card>
           </div>
@@ -389,6 +460,12 @@ const Checkout = () => {
                     <span className="text-neutral-medium">Tax (18%)</span>
                     <span>₹{tax.toLocaleString()}</span>
                   </div>
+                  {codCharges > 0 && (
+                    <div className="flex justify-between">
+                      <span className="text-neutral-medium">COD Charges</span>
+                      <span>₹{codCharges}</span>
+                    </div>
+                  )}
                   <Separator />
                   <div className="flex justify-between text-lg font-bold">
                     <span>Total</span>
@@ -402,7 +479,10 @@ const Checkout = () => {
                   className="btn-primary w-full"
                   size="lg"
                 >
-                  {isProcessing ? 'Processing...' : `Pay ₹${total.toLocaleString()}`}
+                  {isProcessing ? 'Processing...' : 
+                   paymentProvider === 'upi' ? `Pay ₹${total.toLocaleString()} with UPI` :
+                   paymentProvider === 'cod' ? `Place Order - ₹${total.toLocaleString()}` :
+                   `Pay ₹${total.toLocaleString()}`}
                 </Button>
 
                 {/* Trust Badges */}
@@ -414,10 +494,6 @@ const Checkout = () => {
                   <div className="flex items-center space-x-2 text-sm">
                     <Truck className="text-primary" size={16} />
                     <span className="text-neutral-medium">Free delivery in 3-5 days</span>
-                  </div>
-                  <div className="flex items-center space-x-2 text-sm">
-                    <CreditCard className="text-primary" size={16} />
-                    <span className="text-neutral-medium">Multiple payment options</span>
                   </div>
                 </div>
               </CardContent>
