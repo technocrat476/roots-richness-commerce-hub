@@ -4,9 +4,12 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Link } from 'react-router-dom';
+import SearchBox from '@/components/ui/SearchBox';
+import PageSEO from '@/components/SEO/PageSEO';
 
 const FAQ = () => {
   const [openItems, setOpenItems] = useState<number[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const toggleItem = (index: number) => {
     setOpenItems(prev => 
@@ -59,6 +62,27 @@ const FAQ = () => {
     }
   ];
 
+  // Filter FAQ items based on search query
+  const filteredFaqData = faqData.filter(faq => 
+    faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    faq.answer.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    // Auto-expand all items when searching
+    if (query.trim()) {
+      setOpenItems(filteredFaqData.map((_, index) => index));
+    } else {
+      setOpenItems([]);
+    }
+  };
+
+  const handleClearSearch = () => {
+    setSearchQuery('');
+    setOpenItems([]);
+  };
+
   // JSON-LD structured data for FAQ
   const faqJsonLd = {
     "@context": "https://schema.org",
@@ -75,6 +99,14 @@ const FAQ = () => {
 
   return (
     <div className="min-h-screen bg-white">
+      <PageSEO
+        title="FAQ - Frequently Asked Questions | Wood-Pressed Oils"
+        description="Find answers to common questions about our wood-pressed oils, shipping, returns, and more. Search through our comprehensive FAQ to get quick answers."
+        keywords="FAQ, wood-pressed oils questions, shipping policy, return policy, oil storage, organic oils"
+        canonicalUrl="https://yoursite.com/faq"
+        structuredData={faqJsonLd}
+      />
+
       {/* JSON-LD structured data */}
       <script
         type="application/ld+json"
@@ -98,10 +130,21 @@ const FAQ = () => {
           <h1 className="text-3xl lg:text-5xl font-playfair font-bold text-secondary mb-6">
             Frequently Asked Questions
           </h1>
-          <p className="text-lg text-neutral-medium max-w-2xl mx-auto">
+          <p className="text-lg text-neutral-medium max-w-2xl mx-auto mb-8">
             Find answers to common questions about our wood-pressed oils, shipping, and more. 
             Can't find what you're looking for? Feel free to contact us.
           </p>
+          
+          {/* Search Box */}
+          <div className="max-w-md mx-auto">
+            <SearchBox
+              placeholder="Search FAQ..."
+              onSearch={handleSearch}
+              onClear={handleClearSearch}
+              initialValue={searchQuery}
+              debounceMs={300}
+            />
+          </div>
         </div>
       </section>
 
@@ -109,8 +152,20 @@ const FAQ = () => {
       <section className="py-16 bg-neutral-light">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
+            {/* Search Results Info */}
+            {searchQuery && (
+              <div className="mb-6 text-center">
+                <p className="text-neutral-medium">
+                  {filteredFaqData.length > 0 
+                    ? `Found ${filteredFaqData.length} result${filteredFaqData.length !== 1 ? 's' : ''} for "${searchQuery}"`
+                    : `No results found for "${searchQuery}"`
+                  }
+                </p>
+              </div>
+            )}
+
             <div className="space-y-4">
-              {faqData.map((faq, index) => (
+              {filteredFaqData.map((faq, index) => (
                 <Card key={index} className="overflow-hidden">
                   <CardContent className="p-0">
                     <button
@@ -138,6 +193,17 @@ const FAQ = () => {
                 </Card>
               ))}
             </div>
+
+            {filteredFaqData.length === 0 && searchQuery && (
+              <div className="text-center py-12">
+                <p className="text-neutral-medium mb-4">
+                  Try searching with different keywords or browse all questions above.
+                </p>
+                <Button onClick={handleClearSearch} variant="outline">
+                  Show All Questions
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </section>
