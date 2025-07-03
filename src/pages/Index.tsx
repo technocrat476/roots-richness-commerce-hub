@@ -1,3 +1,4 @@
+
 import { Link } from 'react-router-dom';
 import { ArrowRight, ShoppingCart, Star, Truck, Shield, Phone, Brain, Heart, Flame, Droplet, User, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -7,6 +8,7 @@ import { useCart } from '@/contexts/CartContext';
 import AutoplayHero from '@/components/ui/AutoplayHero';
 import PageSEO from '@/components/SEO/PageSEO';
 import HealthBenefitsSection from '@/components/sections/HealthBenefitsSection';
+import StickyCheckoutButton from '@/components/ui/StickyCheckoutButton';
 
 const Index = () => {
   const { dispatch } = useCart();
@@ -338,6 +340,9 @@ const Index = () => {
           </div>
         </section>
       </main>
+
+      {/* Sticky Checkout Button */}
+      <StickyCheckoutButton />
     </div>
   );
 };
