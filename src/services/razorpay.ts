@@ -11,7 +11,7 @@ interface RazorpayOptions {
   currency: string;
   name: string;
   description: string;
-  order_id: string;
+  order_id?: string;
   handler: (response: any) => void;
   prefill: {
     name: string;
@@ -50,9 +50,9 @@ export const initializeRazorpay = () => {
 };
 
 export const createRazorpayOrder = async (paymentData: PaymentData) => {
-  // In a real implementation, this would call your backend API
-  // For demo purposes, we'll simulate order creation
-  const orderId = `order_${Date.now()}`;
+  // For frontend-only implementation, we'll generate a mock order ID
+  // In production, this should be replaced with actual API call to your backend
+  const orderId = `order_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   
   return {
     id: orderId,
@@ -68,43 +68,54 @@ export const processPayment = async (
   onSuccess: (response: any) => void,
   onError: (error: any) => void
 ) => {
-  const res = await initializeRazorpay();
+  try {
+    const res = await initializeRazorpay();
 
-  if (!res) {
-    alert('Razorpay SDK failed to load. Please check your internet connection.');
-    return;
-  }
+    if (!res) {
+      onError('Razorpay SDK failed to load. Please check your internet connection.');
+      return;
+    }
 
-  // Create order
-  const order = await createRazorpayOrder(paymentData);
+    // Create order (frontend simulation)
+    const order = await createRazorpayOrder(paymentData);
 
-  const options: RazorpayOptions = {
-    key: 'rzp_test_9999999999', // Replace with your Razorpay key
-    amount: order.amount,
-    currency: order.currency,
-    name: 'Roots and Richness',
-    description: 'Natural Wood-Pressed Oils & Wellness Products',
-    order_id: order.id,
-    handler: (response) => {
-      console.log('Payment successful:', response);
-      onSuccess(response);
-    },
-    prefill: {
-      name: customerData.name,
-      email: customerData.email,
-      contact: customerData.contact,
-    },
-    theme: {
-      color: '#D4A441',
-    },
-    modal: {
-      ondismiss: () => {
-        console.log('Payment cancelled');
-        onError('Payment cancelled by user');
+    const options: RazorpayOptions = {
+      key: 'rzp_test_9999999999', // Replace with your actual Razorpay key
+      amount: order.amount,
+      currency: order.currency,
+      name: 'Roots and Richness',
+      description: 'Natural Wood-Pressed Oils & Wellness Products',
+      order_id: order.id,
+      handler: (response) => {
+        console.log('Payment successful:', response);
+        // For frontend-only implementation, we'll simulate a successful response
+        const successResponse = {
+          razorpay_payment_id: response.razorpay_payment_id || `pay_${Date.now()}`,
+          razorpay_order_id: order.id,
+          razorpay_signature: response.razorpay_signature || 'simulated_signature'
+        };
+        onSuccess(successResponse);
       },
-    },
-  };
+      prefill: {
+        name: customerData.name,
+        email: customerData.email,
+        contact: customerData.contact,
+      },
+      theme: {
+        color: '#D4A441',
+      },
+      modal: {
+        ondismiss: () => {
+          console.log('Payment cancelled');
+          onError('Payment cancelled by user');
+        },
+      },
+    };
 
-  const razorpay = new window.Razorpay(options);
-  razorpay.open();
+    const razorpay = new window.Razorpay(options);
+    razorpay.open();
+  } catch (error) {
+    console.error('Razorpay initialization error:', error);
+    onError('Failed to initialize payment gateway');
+  }
 };
