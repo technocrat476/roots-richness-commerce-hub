@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Truck, Shield } from 'lucide-react';
@@ -11,7 +10,9 @@ import { useCart } from '@/contexts/CartContext';
 import { processPayment, PaymentProvider } from '@/services/payments';
 import PaymentMethodSelector from '@/components/payment/PaymentMethodSelector';
 import UPIPayment from '@/components/payment/UPIPayment';
+import CouponInput from '@/components/ui/CouponInput';
 import { useToast } from '@/hooks/use-toast';
+import { CouponValidationResult } from '@/services/coupons';
 
 const Checkout = () => {
   const { state, dispatch } = useCart();
@@ -36,6 +37,10 @@ const Checkout = () => {
       ...formData,
       [e.target.name]: e.target.value
     });
+  };
+
+  const handleCouponApplied = (result: CouponValidationResult) => {
+    dispatch({ type: 'APPLY_COUPON', payload: result });
   };
 
   const validateForm = () => {
@@ -428,6 +433,13 @@ const Checkout = () => {
 
           {/* Order Summary */}
           <div className="space-y-6">
+            {/* Coupon Input */}
+            <CouponInput 
+              cartTotal={state.total}
+              onCouponApplied={handleCouponApplied}
+              appliedCoupon={state.appliedCoupon}
+            />
+
             <Card className="sticky top-8">
               <CardHeader>
                 <CardTitle className="font-playfair">Order Summary</CardTitle>
