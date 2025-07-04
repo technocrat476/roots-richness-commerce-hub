@@ -1,5 +1,6 @@
 
 import React, { createContext, useContext, useReducer, ReactNode } from 'react';
+import { CouponValidationResult } from '@/services/coupons';
 
 interface Product {
   id: string;
@@ -17,12 +18,16 @@ interface CartState {
   items: CartItem[];
   total: number;
   itemCount: number;
+  appliedCoupon: CouponValidationResult | null;
+  discountAmount: number;
+  finalTotal: number;
 }
 
 type CartAction = 
   | { type: 'ADD_ITEM'; payload: Product }
   | { type: 'REMOVE_ITEM'; payload: string }
   | { type: 'UPDATE_QUANTITY'; payload: { id: string; quantity: number } }
+  | { type: 'APPLY_COUPON'; payload: CouponValidationResult }
   | { type: 'CLEAR_CART' };
 
 const CartContext = createContext<{
@@ -30,42 +35,49 @@ const CartContext = createContext<{
   dispatch: React.Dispatch<CartAction>;
 } | null>(null);
 
+const calculateTotals = (items: CartItem[], appliedCoupon: CouponValidationResult | null) => {
+  const total = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
+  const discountAmount = appliedCoupon?.success ? appliedCoupon.discount : 0;
+  const finalTotal = Math.max(0, total - discountAmount);
+  
+  return { total, itemCount, discountAmount, finalTotal };
+};
+
 const cartReducer = (state: CartState, action: CartAction): CartState => {
   switch (action.type) {
     case 'ADD_ITEM': {
       const existingItem = state.items.find(item => item.id === action.payload.id);
       
+      let newItems;
       if (existingItem) {
-        const updatedItems = state.items.map(item =>
+        newItems = state.items.map(item =>
           item.id === action.payload.id
             ? { ...item, quantity: item.quantity + 1 }
             : item
         );
-        
-        return {
-          ...state,
-          items: updatedItems,
-          total: updatedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0),
-          itemCount: updatedItems.reduce((sum, item) => sum + item.quantity, 0)
-        };
+      } else {
+        newItems = [...state.items, { ...action.payload, quantity: 1 }];
       }
       
-      const newItems = [...state.items, { ...action.payload, quantity: 1 }];
+      const totals = calculateTotals(newItems, state.appliedCoupon);
+      
       return {
         ...state,
         items: newItems,
-        total: newItems.reduce((sum, item) => sum + (item.price * item.quantity), 0),
-        itemCount: newItems.reduce((sum, item) => sum + item.quantity, 0)
+        ...totals
       };
     }
     
     case 'REMOVE_ITEM': {
       const newItems = state.items.filter(item => item.id !== action.payload);
+      const totals = calculateTotals(newItems, state.appliedCoupon);
+      
       return {
         ...state,
         items: newItems,
-        total: newItems.reduce((sum, item) => sum + (item.price * item.quantity), 0),
-        itemCount: newItems.reduce((sum, item) => sum + item.quantity, 0)
+        appliedCoupon: newItems.length === 0 ? null : state.appliedCoupon,
+        ...totals
       };
     }
     
@@ -76,11 +88,24 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
           : item
       ).filter(item => item.quantity > 0);
       
+      const totals = calculateTotals(newItems, state.appliedCoupon);
+      
       return {
         ...state,
         items: newItems,
-        total: newItems.reduce((sum, item) => sum + (item.price * item.quantity), 0),
-        itemCount: newItems.reduce((sum, item) => sum + item.quantity, 0)
+        appliedCoupon: newItems.length === 0 ? null : state.appliedCoupon,
+        ...totals
+      };
+    }
+    
+    case 'APPLY_COUPON': {
+      const appliedCoupon = action.payload.success ? action.payload : null;
+      const totals = calculateTotals(state.items, appliedCoupon);
+      
+      return {
+        ...state,
+        appliedCoupon: action.payload,
+        ...totals
       };
     }
     
@@ -88,7 +113,10 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
       return {
         items: [],
         total: 0,
-        itemCount: 0
+        itemCount: 0,
+        appliedCoupon: null,
+        discountAmount: 0,
+        finalTotal: 0
       };
     
     default:
@@ -100,7 +128,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer(cartReducer, {
     items: [],
     total: 0,
-    itemCount: 0
+    itemCount: 0,
+    appliedCoupon: null,
+    discountAmount: 0,
+    finalTotal: 0
   });
 
   return (

@@ -1,3 +1,4 @@
+
 import { Link } from 'react-router-dom';
 import { Minus, Plus, Trash2, ArrowLeft, ShoppingBag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -5,6 +6,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { useCart } from '@/contexts/CartContext';
 import StickyCheckoutButton from '@/components/ui/StickyCheckoutButton';
+import CouponInput from '@/components/ui/CouponInput';
+import { CouponValidationResult } from '@/services/coupons';
 
 const Cart = () => {
   const { state, dispatch } = useCart();
@@ -15,6 +18,10 @@ const Cart = () => {
 
   const removeItem = (id: string) => {
     dispatch({ type: 'REMOVE_ITEM', payload: id });
+  };
+
+  const handleCouponApplied = (result: CouponValidationResult) => {
+    dispatch({ type: 'APPLY_COUPON', payload: result });
   };
 
   if (state.items.length === 0) {
@@ -138,6 +145,13 @@ const Cart = () => {
                 </CardContent>
               </Card>
             ))}
+            
+            {/* Coupon Input */}
+            <CouponInput 
+              cartTotal={state.total}
+              onCouponApplied={handleCouponApplied}
+              appliedCoupon={state.appliedCoupon}
+            />
           </div>
 
           {/* Order Summary */}
@@ -152,6 +166,13 @@ const Cart = () => {
                     <span className="font-medium">₹{state.total.toLocaleString()}</span>
                   </div>
                   
+                  {state.discountAmount > 0 && (
+                    <div className="flex justify-between text-green-600">
+                      <span>Coupon Discount</span>
+                      <span className="font-medium">-₹{state.discountAmount.toLocaleString()}</span>
+                    </div>
+                  )}
+                  
                   <div className="flex justify-between">
                     <span className="text-neutral-medium">Shipping</span>
                     <span className="font-medium text-accent">Free</span>
@@ -159,14 +180,21 @@ const Cart = () => {
                   
                   <div className="flex justify-between">
                     <span className="text-neutral-medium">Tax</span>
-                    <span className="font-medium">₹{Math.round(state.total * 0.18).toLocaleString()}</span>
+                    <span className="font-medium">₹{Math.round(state.finalTotal * 0.18).toLocaleString()}</span>
                   </div>
                   
                   <Separator />
                   
                   <div className="flex justify-between text-lg font-bold">
                     <span className="text-secondary">Total</span>
-                    <span className="text-secondary">₹{Math.round(state.total * 1.18).toLocaleString()}</span>
+                    <div className="text-right">
+                      <span className="text-secondary">₹{Math.round(state.finalTotal * 1.18).toLocaleString()}</span>
+                      {state.discountAmount > 0 && (
+                        <div className="text-sm text-green-600 font-normal">
+                          You saved ₹{state.discountAmount}!
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
 
