@@ -50,7 +50,7 @@ const AutoplayHero: React.FC<AutoplayHeroProps> = ({ interval = 1000 }) => {
 
   return (
     <section 
-      className="relative w-full h-[70vh] overflow-hidden"
+      className="relative w-full h-[60vh] overflow-hidden"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       aria-label="Hero banner showcasing Roots and Richness products"
