@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Truck, Shield } from 'lucide-react';
@@ -65,7 +66,7 @@ const Checkout = () => {
   };
 
   const calculateTotals = () => {
-    const subtotal = state.total;
+    const subtotal = state.finalTotal; // Use finalTotal which includes coupon discount
     const tax = Math.round(subtotal * 0.18);
     const codCharges = paymentProvider === 'cod' ? 50 : 0;
     const total = subtotal + tax + codCharges;
@@ -106,7 +107,9 @@ const Checkout = () => {
               tax: tax,
               codCharges: 50,
               total: response.total,
-              customerInfo: formData
+              customerInfo: formData,
+              appliedCoupon: state.appliedCoupon,
+              discountAmount: state.discountAmount
             };
 
             dispatch({ type: 'CLEAR_CART' });
@@ -151,7 +154,9 @@ const Checkout = () => {
               subtotal: subtotal,
               tax: tax,
               total: total,
-              customerInfo: formData
+              customerInfo: formData,
+              appliedCoupon: state.appliedCoupon,
+              discountAmount: state.discountAmount
             };
 
             dispatch({ type: 'CLEAR_CART' });
@@ -199,7 +204,9 @@ const Checkout = () => {
               subtotal: subtotal,
               tax: tax,
               total: total,
-              customerInfo: formData
+              customerInfo: formData,
+              appliedCoupon: state.appliedCoupon,
+              discountAmount: state.discountAmount
             };
             localStorage.setItem('pendingOrder', JSON.stringify(orderData));
           },
@@ -236,7 +243,9 @@ const Checkout = () => {
       subtotal: subtotal,
       tax: tax,
       total: total,
-      customerInfo: formData
+      customerInfo: formData,
+      appliedCoupon: state.appliedCoupon,
+      discountAmount: state.discountAmount
     };
 
     dispatch({ type: 'CLEAR_CART' });
@@ -449,9 +458,17 @@ const Checkout = () => {
                 {/* Pricing */}
                 <div className="space-y-2">
                   <div className="flex justify-between">
-                    <span className="text-neutral-medium">Subtotal</span>
-                    <span>₹{subtotal.toLocaleString()}</span>
+                    <span className="text-neutral-medium">Subtotal ({state.itemCount} items)</span>
+                    <span>₹{state.total.toLocaleString()}</span>
                   </div>
+                  
+                  {state.discountAmount > 0 && (
+                    <div className="flex justify-between text-green-600">
+                      <span>Coupon Discount ({state.appliedCoupon?.coupon?.code})</span>
+                      <span>-₹{state.discountAmount.toLocaleString()}</span>
+                    </div>
+                  )}
+                  
                   <div className="flex justify-between">
                     <span className="text-neutral-medium">Shipping</span>
                     <span className="text-accent">Free</span>
@@ -469,7 +486,14 @@ const Checkout = () => {
                   <Separator />
                   <div className="flex justify-between text-lg font-bold">
                     <span>Total</span>
-                    <span>₹{total.toLocaleString()}</span>
+                    <div className="text-right">
+                      <span>₹{total.toLocaleString()}</span>
+                      {state.discountAmount > 0 && (
+                        <div className="text-sm text-green-600 font-normal">
+                          You saved ₹{state.discountAmount}!
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
 

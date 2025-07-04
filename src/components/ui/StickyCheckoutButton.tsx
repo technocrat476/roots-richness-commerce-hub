@@ -17,7 +17,8 @@ const StickyCheckoutButton = () => {
     navigate('/checkout');
   };
 
-  const total = Math.round(state.total * 1.18); // Including 18% tax
+  // Use finalTotal (which includes coupon discount) and add tax
+  const total = Math.round(state.finalTotal * 1.18); // Including 18% tax
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 p-4 animate-slide-in-bottom">
