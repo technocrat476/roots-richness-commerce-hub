@@ -25,6 +25,10 @@ const Header = () => {
     return location.pathname.startsWith(href);
   };
 
+  const handleNavClick = () => {
+    setIsMenuOpen(false);
+  };
+
   return (
     <header className="bg-white shadow-sm border-b border-neutral-light sticky top-0 z-50">
       <div className="container mx-auto px-4 sm:px-6">
@@ -72,7 +76,7 @@ const Header = () => {
             </Link>
 
             {/* Mobile Menu Button - Touch Friendly */}
-            <Sheet>
+            <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
               <SheetTrigger asChild>
                 <Button 
                   variant="ghost" 
@@ -102,7 +106,7 @@ const Header = () => {
                           className={`block font-medium text-lg py-3 px-4 rounded-lg transition-colors hover:bg-neutral-light ${
                             isActive(item.href) ? 'text-primary bg-primary/10' : 'text-neutral-dark'
                           }`}
-                          onClick={() => setIsMenuOpen(false)}
+                          onClick={handleNavClick}
                         >
                           {item.label}
                         </Link>
