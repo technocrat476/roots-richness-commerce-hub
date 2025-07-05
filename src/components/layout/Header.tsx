@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ShoppingCart, Menu, X, Search } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { Button } from '@/components/ui/button';
@@ -8,8 +8,10 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isNavigating, setIsNavigating] = useState(false);
   const { state: cartState } = useCart();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const navItems = [
     { href: '/', label: 'Home' },
@@ -25,8 +27,23 @@ const Header = () => {
     return location.pathname.startsWith(href);
   };
 
-  const handleNavClick = () => {
+  const handleNavClick = (href: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    
+    // Close menu immediately
     setIsMenuOpen(false);
+    
+    // If already on the same page, don't navigate
+    if (location.pathname === href) return;
+    
+    // Set loading state briefly for visual feedback
+    setIsNavigating(true);
+    
+    // Navigate immediately
+    navigate(href);
+    
+    // Reset loading state after a short delay
+    setTimeout(() => setIsNavigating(false), 100);
   };
 
   return (
@@ -100,16 +117,16 @@ const Header = () => {
                   <nav className="flex-1 px-6 py-4">
                     <div className="space-y-1">
                       {navItems.map((item) => (
-                        <Link
+                        <a
                           key={item.href}
-                          to={item.href}
+                          href={item.href}
                           className={`block font-medium text-lg py-3 px-4 rounded-lg transition-colors hover:bg-neutral-light ${
                             isActive(item.href) ? 'text-primary bg-primary/10' : 'text-neutral-dark'
-                          }`}
-                          onClick={handleNavClick}
+                          } ${isNavigating ? 'opacity-50 pointer-events-none' : ''}`}
+                          onClick={(e) => handleNavClick(item.href, e)}
                         >
                           {item.label}
-                        </Link>
+                        </a>
                       ))}
                     </div>
                   </nav>
