@@ -1,4 +1,5 @@
 
+
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ShoppingCart, Menu, X, Search } from 'lucide-react';
@@ -36,14 +37,11 @@ const Header = () => {
     // If already on the same page, don't navigate
     if (location.pathname === href) return;
     
-    // Set loading state briefly for visual feedback
-    setIsNavigating(true);
-    
-    // Navigate immediately
+    // Navigate immediately without any delay
     navigate(href);
     
-    // Reset loading state after a short delay
-    setTimeout(() => setIsNavigating(false), 100);
+    // Reset any loading state immediately
+    setIsNavigating(false);
   };
 
   return (
@@ -122,7 +120,7 @@ const Header = () => {
                           href={item.href}
                           className={`block font-medium text-lg py-3 px-4 rounded-lg transition-colors hover:bg-neutral-light ${
                             isActive(item.href) ? 'text-primary bg-primary/10' : 'text-neutral-dark'
-                          } ${isNavigating ? 'opacity-50 pointer-events-none' : ''}`}
+                          }`}
                           onClick={(e) => handleNavClick(item.href, e)}
                         >
                           {item.label}
@@ -149,3 +147,4 @@ const Header = () => {
 };
 
 export default Header;
+
