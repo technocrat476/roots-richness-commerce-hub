@@ -50,7 +50,7 @@ const AutoplayHero: React.FC<AutoplayHeroProps> = ({ interval = 1000 }) => {
 
   return (
     <section 
-      className="relative w-full h-[60vh] overflow-hidden"
+      className="relative w-full h-[50vh] sm:h-[60vh] lg:h-[70vh] overflow-hidden"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       aria-label="Hero banner showcasing Roots and Richness products"
@@ -64,34 +64,44 @@ const AutoplayHero: React.FC<AutoplayHeroProps> = ({ interval = 1000 }) => {
               index === currentSlide ? 'opacity-100' : 'opacity-0'
             }`}
           >
-            <img
-              src={slide.image}
-              alt={slide.alt}
-              className="w-full h-full object-cover"
-              loading={index === 0 ? 'eager' : 'lazy'}
-              style={{
-                transform: index === currentSlide ? 'scale(1)' : 'scale(1.05)',
-                transition: 'transform 1000ms ease-in-out'
-              }}
-            />
+            <picture>
+              <source 
+                media="(max-width: 640px)" 
+                srcSet={`${slide.image}&w=640&h=480`} 
+              />
+              <source 
+                media="(max-width: 1024px)" 
+                srcSet={`${slide.image}&w=1024&h=768`} 
+              />
+              <img
+                src={slide.image}
+                alt={slide.alt}
+                className="w-full h-full object-cover"
+                loading={index === 0 ? 'eager' : 'lazy'}
+                style={{
+                  transform: index === currentSlide ? 'scale(1)' : 'scale(1.05)',
+                  transition: 'transform 1000ms ease-in-out'
+                }}
+              />
+            </picture>
             
             {/* Dark overlay for text readability */}
-            <div className="absolute inset-0 bg-black/30" />
+            <div className="absolute inset-0 bg-black/40 sm:bg-black/30" />
           </div>
         ))}
       </div>
 
-      {/* Text Overlay */}
-      <div className="absolute inset-0 flex items-center justify-center text-center px-4">
-        <div className="max-w-4xl mx-auto space-y-6">
+      {/* Text Overlay - Mobile First */}
+      <div className="absolute inset-0 flex items-center justify-center text-center px-4 sm:px-6">
+        <div className="max-w-sm sm:max-w-2xl lg:max-w-4xl mx-auto space-y-3 sm:space-y-6">
           <h1 
-            className="text-4xl md:text-6xl lg:text-7xl font-playfair font-bold text-white leading-tight animate-fade-in"
+            className="text-2xl sm:text-4xl md:text-6xl lg:text-7xl font-playfair font-bold text-white leading-tight animate-fade-in"
             key={`headline-${currentSlide}`}
           >
             {slides[currentSlide].headline}
           </h1>
           <p 
-            className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto animate-fade-in"
+            className="text-sm sm:text-lg md:text-xl text-white/90 max-w-xs sm:max-w-2xl mx-auto animate-fade-in"
             key={`subtext-${currentSlide}`}
             style={{ animationDelay: '0.2s' }}
           >
@@ -101,19 +111,19 @@ const AutoplayHero: React.FC<AutoplayHeroProps> = ({ interval = 1000 }) => {
       </div>
 
       {/* Progress Indicators */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2">
+      <div className="absolute bottom-4 sm:bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2">
         {slides.map((_, index) => (
           <div
             key={index}
             className={`w-2 h-2 rounded-full transition-all duration-300 ${
-              index === currentSlide ? 'bg-white w-8' : 'bg-white/50'
+              index === currentSlide ? 'bg-white w-6 sm:w-8' : 'bg-white/50'
             }`}
           />
         ))}
       </div>
 
-      {/* Scroll Hint */}
-      <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 text-center animate-bounce">
+      {/* Scroll Hint - Hidden on mobile for space */}
+      <div className="hidden sm:block absolute bottom-12 lg:bottom-16 left-1/2 transform -translate-x-1/2 text-center animate-bounce">
         <div className="text-white/80 text-sm mb-2">Scroll to discover</div>
         <ChevronDown className="text-white/80 mx-auto" size={24} />
       </div>

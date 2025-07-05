@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ShoppingCart, Menu, X, Search } from 'lucide-react';
@@ -26,22 +27,22 @@ const Header = () => {
 
   return (
     <header className="bg-white shadow-sm border-b border-neutral-light sticky top-0 z-50">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
-            <div className="text-2xl font-playfair font-bold text-secondary">
+      <div className="container mx-auto px-4 sm:px-6">
+        <div className="flex items-center justify-between h-14 sm:h-16">
+          {/* Logo - Mobile Optimized */}
+          <Link to="/" className="flex items-center space-x-2 min-w-0 flex-1 sm:flex-none">
+            <div className="text-lg sm:text-2xl font-playfair font-bold text-secondary truncate">
               Roots & Richness
             </div>
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
+          <nav className="hidden lg:flex items-center space-x-6 xl:space-x-8">
             {navItems.map((item) => (
               <Link
                 key={item.href}
                 to={item.href}
-                className={`font-medium transition-colors hover:text-primary ${
+                className={`font-medium transition-colors hover:text-primary text-sm xl:text-base ${
                   isActive(item.href) ? 'text-primary' : 'text-neutral-dark'
                 }`}
               >
@@ -50,57 +51,70 @@ const Header = () => {
             ))}
           </nav>
 
-          {/* Right Section */}
-          <div className="flex items-center space-x-4">
-            {/* Search Icon (Desktop) */}
-            <button className="hidden md:block p-2 hover:bg-neutral-light rounded-lg transition-colors">
-              <Search size={20} className="text-neutral-dark" />
+          {/* Right Section - Mobile Optimized */}
+          <div className="flex items-center space-x-2 sm:space-x-4">
+            {/* Search Icon (Desktop only) */}
+            <button className="hidden md:flex p-2 hover:bg-neutral-light rounded-lg transition-colors">
+              <Search size={18} className="text-neutral-dark" />
             </button>
 
-            {/* Cart */}
+            {/* Cart - Touch Friendly */}
             <Link
               to="/cart"
-              className="flex items-center space-x-1 p-2 hover:bg-neutral-light rounded-lg transition-colors relative"
+              className="flex items-center space-x-1 p-2 sm:p-3 hover:bg-neutral-light rounded-lg transition-colors relative min-w-[48px] min-h-[48px] justify-center"
             >
               <ShoppingCart size={20} className="text-neutral-dark" />
               {cartState.itemCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-primary text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 bg-primary text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium">
                   {cartState.itemCount}
                 </span>
               )}
             </Link>
 
-            {/* Mobile Menu */}
+            {/* Mobile Menu Button - Touch Friendly */}
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="md:hidden">
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="lg:hidden min-w-[48px] min-h-[48px] p-0"
+                  aria-label="Open menu"
+                >
                   <Menu size={20} />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-80">
-                <div className="flex flex-col space-y-6 mt-6">
-                  <div className="text-xl font-playfair font-bold text-secondary">
-                    Roots & Richness
+              <SheetContent side="right" className="w-full sm:w-80 p-0">
+                <div className="flex flex-col h-full">
+                  {/* Mobile Menu Header */}
+                  <div className="p-6 border-b border-neutral-light">
+                    <div className="text-xl font-playfair font-bold text-secondary">
+                      Roots & Richness
+                    </div>
                   </div>
                   
-                  <nav className="flex flex-col space-y-4">
-                    {navItems.map((item) => (
-                      <Link
-                        key={item.href}
-                        to={item.href}
-                        className={`font-medium text-lg transition-colors hover:text-primary ${
-                          isActive(item.href) ? 'text-primary' : 'text-neutral-dark'
-                        }`}
-                      >
-                        {item.label}
-                      </Link>
-                    ))}
+                  {/* Mobile Navigation */}
+                  <nav className="flex-1 px-6 py-4">
+                    <div className="space-y-1">
+                      {navItems.map((item) => (
+                        <Link
+                          key={item.href}
+                          to={item.href}
+                          className={`block font-medium text-lg py-3 px-4 rounded-lg transition-colors hover:bg-neutral-light ${
+                            isActive(item.href) ? 'text-primary bg-primary/10' : 'text-neutral-dark'
+                          }`}
+                          onClick={() => setIsMenuOpen(false)}
+                        >
+                          {item.label}
+                        </Link>
+                      ))}
+                    </div>
                   </nav>
 
-                  <div className="pt-4 border-t border-neutral-light">
-                    <button className="flex items-center space-x-3 w-full p-3 hover:bg-neutral-light rounded-lg transition-colors">
+                  {/* Mobile Search */}
+                  <div className="p-6 border-t border-neutral-light">
+                    <button className="flex items-center space-x-3 w-full p-4 hover:bg-neutral-light rounded-lg transition-colors">
                       <Search size={20} className="text-neutral-dark" />
-                      <span className="text-neutral-dark">Search Products</span>
+                      <span className="text-neutral-dark font-medium">Search Products</span>
                     </button>
                   </div>
                 </div>
