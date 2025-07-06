@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { MapPin, Phone, Mail, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -6,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import PageSEO from '@/components/SEO/PageSEO';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -29,8 +29,49 @@ const Contact = () => {
     console.log('Form submitted:', formData);
   };
 
+  // Enhanced structured data for Contact page
+  const contactPageStructuredData = [
+    {
+      "@context": "https://schema.org",
+      "@type": "ContactPage",
+      "name": "Contact Roots and Richness",
+      "url": "https://rootsandrichness.in/contact",
+      "description": "Get in touch with Roots and Richness for premium wood-pressed oils and natural wellness products. We're here to help with any questions about our traditional, farm-sourced products."
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "Roots and Richness",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "123 Green Valley Road",
+        "addressLocality": "Mumbai",
+        "addressRegion": "Maharashtra",
+        "postalCode": "400001",
+        "addressCountry": "IN"
+      },
+      "telephone": "+91-98765-43210",
+      "email": "hello@rootsandrichness.com",
+      "url": "https://rootsandrichness.in/contact",
+      "openingHours": [
+        "Mo-Fr 09:00-18:00",
+        "Sa 09:00-16:00"
+      ],
+      "priceRange": "$$",
+      "paymentAccepted": ["Cash", "Credit Card", "UPI", "Bank Transfer"]
+    }
+  ];
+
   return (
     <div className="min-h-screen bg-white">
+      <PageSEO 
+        title="Contact Roots and Richness - Get in Touch | Premium Natural Products"
+        description="Contact Roots and Richness for premium wood-pressed oils and natural wellness products. Call +91-98765-43210 or visit us in Mumbai. We're here to help with your natural wellness journey."
+        keywords="contact roots and richness, wood-pressed oils contact, natural products support, customer service, mumbai location, premium oils contact"
+        canonicalUrl="https://rootsandrichness.in/contact"
+        structuredData={contactPageStructuredData}
+      />
+
       {/* Hero Section */}
       <section className="py-20 bg-gradient-to-br from-neutral-light to-white">
         <div className="container mx-auto px-4">

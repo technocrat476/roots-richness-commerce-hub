@@ -27,14 +27,47 @@ const Index = () => {
     });
   };
 
-  // Structured data for homepage
-  const homePageStructuredData = {
-    "@context": "https://schema.org",
-    "@type": "WebPage",
-    "name": "Pure Wood-Pressed Oils, Handpicked from Indian Farms - Roots and Richness",
-    "description": "Cold-pressed, chemical-free oils and natural wellness products directly from Indian farms. Wood-pressed oils with traditional methods for authentic purity.",
-    "url": "https://rootsandrichness.in/",
-    "mainEntity": {
+  // Enhanced structured data for homepage
+  const homePageStructuredData = [
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Roots and Richness",
+      "url": "https://rootsandrichness.in/",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://rootsandrichness.in/products?search={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Roots and Richness",
+      "url": "https://rootsandrichness.in",
+      "logo": "https://rootsandrichness.in/logo.png",
+      "description": "Premium natural wellness products including wood-pressed oils, tribal-sourced coffee, and traditional wellness items sourced directly from Indian farms and tribal communities.",
+      "sameAs": [
+        "https://www.instagram.com/rootsandrichness",
+        "https://www.facebook.com/rootsandrichness"
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+91-98765-43210",
+        "contactType": "customer service",
+        "availableLanguage": ["English", "Hindi"]
+      },
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "123 Green Valley Road",
+        "addressLocality": "Mumbai",
+        "addressRegion": "Maharashtra",
+        "postalCode": "400001",
+        "addressCountry": "IN"
+      }
+    },
+    {
+      "@context": "https://schema.org",
       "@type": "ItemList",
       "name": "Featured Products",
       "itemListElement": featuredProducts.map((product, index) => ({
@@ -43,15 +76,20 @@ const Index = () => {
         "name": product.name,
         "description": product.shortDescription,
         "image": product.images[0],
+        "brand": {
+          "@type": "Brand",
+          "name": "Roots and Richness"
+        },
         "offers": {
           "@type": "Offer",
           "price": product.price,
           "priceCurrency": "INR",
-          "availability": "https://schema.org/InStock"
+          "availability": "https://schema.org/InStock",
+          "url": `https://rootsandrichness.in/products/${product.slug}`
         }
       }))
     }
-  };
+  ];
 
   return (
     <div className="min-h-screen">

@@ -11,24 +11,48 @@ const About = () => {
     { label: 'About Us' }
   ];
 
-  // Structured data for About page
-  const aboutPageStructuredData = {
-    "@context": "https://schema.org",
-    "@type": "AboutPage",
-    "name": "About Roots and Richness - Our Story of Traditional Wellness",
-    "description": "Learn about Roots and Richness - India's trusted source for wood-pressed oils and natural wellness products, sourced directly from tribal communities and small farms",
-    "url": "https://rootsandrichness.in/about",
-    "mainEntity": {
+  // Enhanced structured data for About page
+  const aboutPageStructuredData = [
+    {
+      "@context": "https://schema.org",
+      "@type": "AboutPage",
+      "name": "About Roots and Richness - Our Story of Traditional Wellness",
+      "description": "Learn about Roots and Richness - India's trusted source for wood-pressed oils and natural wellness products, sourced directly from tribal communities and small farms",
+      "url": "https://rootsandrichness.in/about",
+      "mainEntity": {
+        "@type": "Organization",
+        "name": "Roots and Richness",
+        "foundingDate": "2018",
+        "founder": {
+          "@type": "Person",
+          "name": "Rajesh Kumar"
+        },
+        "mission": "To bring pure, traditional wellness products from Indian farms and tribal communities to modern homes",
+        "numberOfEmployees": "25-50",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "123 Green Valley Road",
+          "addressLocality": "Mumbai",
+          "addressRegion": "Maharashtra",
+          "postalCode": "400001",
+          "addressCountry": "IN"
+        }
+      }
+    },
+    {
+      "@context": "https://schema.org",
       "@type": "Organization",
       "name": "Roots and Richness",
+      "url": "https://rootsandrichness.in",
+      "logo": "https://rootsandrichness.in/logo.png",
+      "description": "Premium natural wellness products including wood-pressed oils, tribal-sourced coffee, and traditional wellness items sourced directly from Indian farms and tribal communities.",
       "foundingDate": "2018",
-      "founder": {
-        "@type": "Person",
-        "name": "Rajesh Kumar"
-      },
-      "mission": "To bring pure, traditional wellness products from Indian farms and tribal communities to modern homes"
+      "sameAs": [
+        "https://www.instagram.com/rootsandrichness",
+        "https://www.facebook.com/rootsandrichness"
+      ]
     }
-  };
+  ];
 
   return (
     <div className="min-h-screen bg-white">
