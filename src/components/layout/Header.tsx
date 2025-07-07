@@ -1,18 +1,36 @@
 
-
 import { useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { ShoppingCart, Menu, X, Search } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
+// Safe hook that works during SSR
+const useSafeLocation = () => {
+  try {
+    const { useLocation } = require('react-router-dom');
+    return useLocation();
+  } catch {
+    return { pathname: '/' };
+  }
+};
+
+const useSafeNavigate = () => {
+  try {
+    const { useNavigate } = require('react-router-dom');
+    return useNavigate();
+  } catch {
+    return () => {};
+  }
+};
+
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isNavigating, setIsNavigating] = useState(false);
   const { state: cartState } = useCart();
-  const location = useLocation();
-  const navigate = useNavigate();
+  const location = useSafeLocation();
+  const navigate = useSafeNavigate();
 
   const navItems = [
     { href: '/', label: 'Home' },
@@ -147,4 +165,3 @@ const Header = () => {
 };
 
 export default Header;
-
