@@ -1,9 +1,20 @@
 
+# Robots.txt for Roots and Richness
+# Updated for better SEO crawling
+
 User-agent: Googlebot
 Allow: /
 Crawl-delay: 1
 
 User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Slurp
+Allow: /
+Crawl-delay: 2
+
+User-agent: DuckDuckBot
 Allow: /
 Crawl-delay: 1
 
@@ -13,6 +24,12 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
+User-agent: LinkedInBot
+Allow: /
+
+User-agent: PinterestBot
+Allow: /
+
 User-agent: *
 Allow: /
 Allow: /products/
@@ -20,11 +37,18 @@ Allow: /about
 Allow: /contact
 Allow: /blog/
 Allow: /policies/
+Allow: /faq
 Disallow: /admin/
 Disallow: /cart
 Disallow: /checkout
 Disallow: /api/
+Disallow: /private/
+Disallow: /*.json$
+Disallow: /*?*
 Crawl-delay: 2
 
 # Sitemap location
 Sitemap: https://rootsandrichness.in/sitemap.xml
+
+# Host preference (avoid duplicate content)
+Host: rootsandrichness.in

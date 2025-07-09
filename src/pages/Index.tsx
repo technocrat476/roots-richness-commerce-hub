@@ -1,4 +1,3 @@
-
 import { Link } from 'react-router-dom';
 import { ArrowRight, ShoppingCart, Star, Truck, Shield, Phone, Brain, Heart, Flame, Droplet, User, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -6,7 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { products } from '@/data/products';
 import { useCart } from '@/contexts/CartContext';
 import AutoplayHero from '@/components/ui/AutoplayHero';
-import PageSEO from '@/components/SEO/PageSEO';
+import HomeSEO from '@/components/SEO/HomeSEO';
 import HealthBenefitsSection from '@/components/sections/HealthBenefitsSection';
 import StickyCheckoutButton from '@/components/ui/StickyCheckoutButton';
 
@@ -27,41 +26,9 @@ const Index = () => {
     });
   };
 
-  // Structured data for homepage
-  const homePageStructuredData = {
-    "@context": "https://schema.org",
-    "@type": "WebPage",
-    "name": "Pure Wood-Pressed Oils, Handpicked from Indian Farms - Roots and Richness",
-    "description": "Cold-pressed, chemical-free oils and natural wellness products directly from Indian farms. Wood-pressed oils with traditional methods for authentic purity.",
-    "url": "https://rootsandrichness.in/",
-    "mainEntity": {
-      "@type": "ItemList",
-      "name": "Featured Products",
-      "itemListElement": featuredProducts.map((product, index) => ({
-        "@type": "Product",
-        "position": index + 1,
-        "name": product.name,
-        "description": product.shortDescription,
-        "image": product.images[0],
-        "offers": {
-          "@type": "Offer",
-          "price": product.price,
-          "priceCurrency": "INR",
-          "availability": "https://schema.org/InStock"
-        }
-      }))
-    }
-  };
-
   return (
     <div className="min-h-screen">
-      <PageSEO 
-        title="Pure Wood-Pressed Oils, Handpicked from Indian Farms | Roots and Richness"
-        description="Cold-pressed, chemical-free oils and natural wellness products directly from Indian farms. Buy authentic wood-pressed mustard oil, groundnut oil, and tribal coffee online."
-        keywords="wood-pressed oils, cold-pressed oils, pure oils online, mustard oil, groundnut oil, tribal coffee, natural wellness products, buy oils online India"
-        canonicalUrl="https://rootsandrichness.in/"
-        structuredData={homePageStructuredData}
-      />
+      <HomeSEO />
 
       {/* Mobile-First Meta Viewport */}
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -132,7 +99,9 @@ const Index = () => {
                         src={product.images[0]}
                         alt={`${product.name} - Pure wood-pressed oil from Roots and Richness, sourced directly from Indian farms`}
                         className="w-full h-48 sm:h-56 lg:h-64 object-cover group-hover:scale-105 transition-transform duration-300"
-                        loading="lazy"
+                        loading={index < 3 ? 'eager' : 'lazy'}
+                        width="320"
+                        height="240"
                       />
                     </picture>
                     {product.originalPrice && (

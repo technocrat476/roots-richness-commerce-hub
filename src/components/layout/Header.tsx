@@ -1,15 +1,36 @@
 
 import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { ShoppingCart, Menu, X, Search } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
+// Safe hook that works during SSR
+const useSafeLocation = () => {
+  try {
+    const { useLocation } = require('react-router-dom');
+    return useLocation();
+  } catch {
+    return { pathname: '/' };
+  }
+};
+
+const useSafeNavigate = () => {
+  try {
+    const { useNavigate } = require('react-router-dom');
+    return useNavigate();
+  } catch {
+    return () => {};
+  }
+};
+
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isNavigating, setIsNavigating] = useState(false);
   const { state: cartState } = useCart();
-  const location = useLocation();
+  const location = useSafeLocation();
+  const navigate = useSafeNavigate();
 
   const navItems = [
     { href: '/', label: 'Home' },
@@ -25,8 +46,20 @@ const Header = () => {
     return location.pathname.startsWith(href);
   };
 
-  const handleNavClick = () => {
+  const handleNavClick = (href: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    
+    // Close menu immediately
     setIsMenuOpen(false);
+    
+    // If already on the same page, don't navigate
+    if (location.pathname === href) return;
+    
+    // Navigate immediately without any delay
+    navigate(href);
+    
+    // Reset any loading state immediately
+    setIsNavigating(false);
   };
 
   return (
@@ -100,16 +133,16 @@ const Header = () => {
                   <nav className="flex-1 px-6 py-4">
                     <div className="space-y-1">
                       {navItems.map((item) => (
-                        <Link
+                        <a
                           key={item.href}
-                          to={item.href}
+                          href={item.href}
                           className={`block font-medium text-lg py-3 px-4 rounded-lg transition-colors hover:bg-neutral-light ${
                             isActive(item.href) ? 'text-primary bg-primary/10' : 'text-neutral-dark'
                           }`}
-                          onClick={handleNavClick}
+                          onClick={(e) => handleNavClick(item.href, e)}
                         >
                           {item.label}
-                        </Link>
+                        </a>
                       ))}
                     </div>
                   </nav>
