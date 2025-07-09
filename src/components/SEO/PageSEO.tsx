@@ -1,6 +1,5 @@
 
 import { useEffect } from 'react';
-import { Helmet } from 'react-helmet-async';
 
 interface PageSEOProps {
   title: string;
@@ -10,9 +9,6 @@ interface PageSEOProps {
   ogImage?: string;
   ogType?: string;
   structuredData?: object | object[];
-  author?: string;
-  publishDate?: string;
-  modifiedDate?: string;
 }
 
 const PageSEO = ({ 
@@ -20,59 +16,75 @@ const PageSEO = ({
   description, 
   keywords, 
   canonicalUrl, 
-  ogImage = "https://rootsandrichness.in/logo.png",
+  ogImage = "https://lovable.dev/opengraph-image-p98pqg.png",
   ogType = "website",
-  structuredData,
-  author,
-  publishDate,
-  modifiedDate
+  structuredData 
 }: PageSEOProps) => {
-  return (
-    <>
-      <Helmet>
-        {/* Primary Meta Tags */}
-        <title>{title}</title>
-        <meta name="title" content={title} />
-        <meta name="description" content={description} />
-        {keywords && <meta name="keywords" content={keywords} />}
-        <link rel="canonical" href={canonicalUrl} />
-        
-        {/* Open Graph / Facebook */}
-        <meta property="og:type" content={ogType} />
-        <meta property="og:url" content={canonicalUrl} />
-        <meta property="og:title" content={title} />
-        <meta property="og:description" content={description} />
-        <meta property="og:image" content={ogImage} />
-        <meta property="og:site_name" content="Roots and Richness" />
-        <meta property="og:locale" content="en_IN" />
-        
-        {/* Twitter */}
-        <meta property="twitter:card" content="summary_large_image" />
-        <meta property="twitter:url" content={canonicalUrl} />
-        <meta property="twitter:title" content={title} />
-        <meta property="twitter:description" content={description} />
-        <meta property="twitter:image" content={ogImage} />
-        <meta name="twitter:creator" content="@rootsandrichness" />
-        
-        {/* Additional SEO Meta Tags */}
-        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-        <meta name="googlebot" content="index, follow" />
-        <meta name="bingbot" content="index, follow" />
-        
-        {/* Author and Publishing Info */}
-        {author && <meta name="author" content={author} />}
-        {publishDate && <meta property="article:published_time" content={publishDate} />}
-        {modifiedDate && <meta property="article:modified_time" content={modifiedDate} />}
-        
-        {/* Structured Data */}
-        {structuredData && (
-          <script type="application/ld+json">
-            {JSON.stringify(Array.isArray(structuredData) ? structuredData : [structuredData])}
-          </script>
-        )}
-      </Helmet>
-    </>
-  );
+  useEffect(() => {
+    // Update document title
+    document.title = title;
+
+    // Update meta description
+    let metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', description);
+    }
+
+    // Update keywords if provided
+    if (keywords) {
+      let metaKeywords = document.querySelector('meta[name="keywords"]');
+      if (metaKeywords) {
+        metaKeywords.setAttribute('content', keywords);
+      }
+    }
+
+    // Update canonical URL
+    let canonicalLink = document.querySelector('link[rel="canonical"]');
+    if (canonicalLink) {
+      canonicalLink.setAttribute('href', canonicalUrl);
+    }
+
+    // Update Open Graph tags
+    let ogTitle = document.querySelector('meta[property="og:title"]');
+    let ogDesc = document.querySelector('meta[property="og:description"]');
+    let ogUrl = document.querySelector('meta[property="og:url"]');
+    let ogImageMeta = document.querySelector('meta[property="og:image"]');
+    let ogTypeMeta = document.querySelector('meta[property="og:type"]');
+
+    if (ogTitle) ogTitle.setAttribute('content', title);
+    if (ogDesc) ogDesc.setAttribute('content', description);
+    if (ogUrl) ogUrl.setAttribute('content', canonicalUrl);
+    if (ogImageMeta) ogImageMeta.setAttribute('content', ogImage);
+    if (ogTypeMeta) ogTypeMeta.setAttribute('content', ogType);
+
+    // Update Twitter tags
+    let twitterTitle = document.querySelector('meta[name="twitter:title"]');
+    let twitterDesc = document.querySelector('meta[name="twitter:description"]');
+    let twitterImage = document.querySelector('meta[name="twitter:image"]');
+
+    if (twitterTitle) twitterTitle.setAttribute('content', title);
+    if (twitterDesc) twitterDesc.setAttribute('content', description);
+    if (twitterImage) twitterImage.setAttribute('content', ogImage);
+
+    // Remove existing structured data scripts
+    const existingScripts = document.querySelectorAll('script[type="application/ld+json"][data-page-structured-data]');
+    existingScripts.forEach(script => script.remove());
+
+    // Add structured data if provided
+    if (structuredData) {
+      const dataArray = Array.isArray(structuredData) ? structuredData : [structuredData];
+      
+      dataArray.forEach((data, index) => {
+        const script = document.createElement('script');
+        script.type = 'application/ld+json';
+        script.setAttribute('data-page-structured-data', `page-${index}`);
+        script.textContent = JSON.stringify(data);
+        document.head.appendChild(script);
+      });
+    }
+  }, [title, description, keywords, canonicalUrl, ogImage, ogType, structuredData]);
+
+  return null;
 };
 
 export default PageSEO;
