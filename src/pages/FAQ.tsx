@@ -11,6 +11,14 @@ const FAQ = () => {
   const [openItems, setOpenItems] = useState<number[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
 
+  const toggleItem = (index: number) => {
+    setOpenItems(prev => 
+      prev.includes(index) 
+        ? prev.filter(i => i !== index)
+        : [...prev, index]
+    );
+  };
+
   const faqData = [
     {
       question: "What makes wood-pressed oils different from regular oils?",
@@ -60,29 +68,13 @@ const FAQ = () => {
     faq.answer.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const toggleItem = (index: number) => {
-    setOpenItems(prev => 
-      prev.includes(index) 
-        ? prev.filter(i => i !== index)
-        : [...prev, index]
-    );
-  };
-
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-    // Clear open items when searching to reset state
-    setOpenItems([]);
-    
-    // Auto-expand all items when searching with results
-    if (query.trim() && filteredFaqData.length > 0) {
-      // Use setTimeout to ensure filteredFaqData is updated after state change
-      setTimeout(() => {
-        const filteredData = faqData.filter(faq => 
-          faq.question.toLowerCase().includes(query.toLowerCase()) ||
-          faq.answer.toLowerCase().includes(query.toLowerCase())
-        );
-        setOpenItems(filteredData.map((_, index) => index));
-      }, 0);
+    // Auto-expand all items when searching
+    if (query.trim()) {
+      setOpenItems(filteredFaqData.map((_, index) => index));
+    } else {
+      setOpenItems([]);
     }
   };
 
@@ -174,7 +166,7 @@ const FAQ = () => {
 
             <div className="space-y-4">
               {filteredFaqData.map((faq, index) => (
-                <Card key={`${faq.question}-${index}`} className="overflow-hidden">
+                <Card key={index} className="overflow-hidden">
                   <CardContent className="p-0">
                     <button
                       onClick={() => toggleItem(index)}
