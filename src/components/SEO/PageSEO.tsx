@@ -8,7 +8,7 @@ interface PageSEOProps {
   canonicalUrl: string;
   ogImage?: string;
   ogType?: string;
-  structuredData?: object | object[];
+  structuredData?: object;
 }
 
 const PageSEO = ({ 
@@ -66,21 +66,18 @@ const PageSEO = ({
     if (twitterDesc) twitterDesc.setAttribute('content', description);
     if (twitterImage) twitterImage.setAttribute('content', ogImage);
 
-    // Remove existing structured data scripts
-    const existingScripts = document.querySelectorAll('script[type="application/ld+json"][data-page-structured-data]');
-    existingScripts.forEach(script => script.remove());
-
     // Add structured data if provided
     if (structuredData) {
-      const dataArray = Array.isArray(structuredData) ? structuredData : [structuredData];
-      
-      dataArray.forEach((data, index) => {
-        const script = document.createElement('script');
-        script.type = 'application/ld+json';
-        script.setAttribute('data-page-structured-data', `page-${index}`);
-        script.textContent = JSON.stringify(data);
-        document.head.appendChild(script);
-      });
+      let existingScript = document.querySelector('script[type="application/ld+json"]#page-structured-data');
+      if (existingScript) {
+        existingScript.remove();
+      }
+
+      const script = document.createElement('script');
+      script.type = 'application/ld+json';
+      script.id = 'page-structured-data';
+      script.textContent = JSON.stringify(structuredData);
+      document.head.appendChild(script);
     }
   }, [title, description, keywords, canonicalUrl, ogImage, ogType, structuredData]);
 
