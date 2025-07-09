@@ -1,7 +1,6 @@
 
-
 import { useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { ShoppingCart, Menu, X, Search } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { Button } from '@/components/ui/button';
@@ -9,10 +8,8 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isNavigating, setIsNavigating] = useState(false);
   const { state: cartState } = useCart();
   const location = useLocation();
-  const navigate = useNavigate();
 
   const navItems = [
     { href: '/', label: 'Home' },
@@ -28,20 +25,8 @@ const Header = () => {
     return location.pathname.startsWith(href);
   };
 
-  const handleNavClick = (href: string, e: React.MouseEvent) => {
-    e.preventDefault();
-    
-    // Close menu immediately
+  const handleNavClick = () => {
     setIsMenuOpen(false);
-    
-    // If already on the same page, don't navigate
-    if (location.pathname === href) return;
-    
-    // Navigate immediately without any delay
-    navigate(href);
-    
-    // Reset any loading state immediately
-    setIsNavigating(false);
   };
 
   return (
@@ -115,16 +100,16 @@ const Header = () => {
                   <nav className="flex-1 px-6 py-4">
                     <div className="space-y-1">
                       {navItems.map((item) => (
-                        <a
+                        <Link
                           key={item.href}
-                          href={item.href}
+                          to={item.href}
                           className={`block font-medium text-lg py-3 px-4 rounded-lg transition-colors hover:bg-neutral-light ${
                             isActive(item.href) ? 'text-primary bg-primary/10' : 'text-neutral-dark'
                           }`}
-                          onClick={(e) => handleNavClick(item.href, e)}
+                          onClick={handleNavClick}
                         >
                           {item.label}
-                        </a>
+                        </Link>
                       ))}
                     </div>
                   </nav>
@@ -147,4 +132,3 @@ const Header = () => {
 };
 
 export default Header;
-
