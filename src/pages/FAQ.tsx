@@ -70,7 +70,7 @@ const FAQ = () => {
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-    setOpenItems([]); // Always clear first
+    // Don't automatically clear open items - let user control expansion
   };
 
   const handleClearSearch = () => {
