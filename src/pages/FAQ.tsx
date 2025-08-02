@@ -70,19 +70,7 @@ const FAQ = () => {
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-    // Clear open items when searching to reset state
-    setOpenItems([]);
-    
-    // Auto-expand all items when searching with results
-    if (query.trim()) {
-      const filteredData = faqData.filter(faq => 
-        faq.question.toLowerCase().includes(query.toLowerCase()) ||
-        faq.answer.toLowerCase().includes(query.toLowerCase())
-      );
-      if (filteredData.length > 0) {
-        setOpenItems(filteredData.map(faq => faq.question));
-      }
-    }
+    setOpenItems([]); // Always clear first
   };
 
   const handleClearSearch = () => {
