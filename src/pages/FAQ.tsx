@@ -74,15 +74,14 @@ const FAQ = () => {
     setOpenItems([]);
     
     // Auto-expand all items when searching with results
-    if (query.trim() && filteredFaqData.length > 0) {
-      // Use setTimeout to ensure filteredFaqData is updated after state change
-      setTimeout(() => {
-        const filteredData = faqData.filter(faq => 
-          faq.question.toLowerCase().includes(query.toLowerCase()) ||
-          faq.answer.toLowerCase().includes(query.toLowerCase())
-        );
+    if (query.trim()) {
+      const filteredData = faqData.filter(faq => 
+        faq.question.toLowerCase().includes(query.toLowerCase()) ||
+        faq.answer.toLowerCase().includes(query.toLowerCase())
+      );
+      if (filteredData.length > 0) {
         setOpenItems(filteredData.map(faq => faq.question));
-      }, 0);
+      }
     }
   };
 
