@@ -109,13 +109,17 @@ const Header = () => {
             </Link>
 
             {/* Mobile Menu Button - Touch Friendly */}
-            <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
+            <Sheet open={isMenuOpen} onOpenChange={(open) => {
+              console.log('Sheet onOpenChange:', open);
+              setIsMenuOpen(open);
+            }}>
               <SheetTrigger asChild>
                 <Button 
                   variant="ghost" 
                   size="icon" 
                   className="lg:hidden min-w-[48px] min-h-[48px] p-0"
                   aria-label="Open menu"
+                  onClick={() => console.log('Menu button clicked')}
                 >
                   <Menu size={20} />
                 </Button>
