@@ -137,16 +137,16 @@ const Header = () => {
                   <nav className="flex-1 px-6 py-4">
                     <div className="space-y-1">
                       {navItems.map((item) => (
-                        <a
+                        <Link
                           key={item.href}
-                          href={item.href}
+                          to={item.href}
                           className={`block font-medium text-lg py-3 px-4 rounded-lg transition-colors hover:bg-neutral-light ${
                             isActive(item.href) ? 'text-primary bg-primary/10' : 'text-neutral-dark'
                           }`}
-                          onClick={(e) => handleNavClick(item.href, e)}
+                          onClick={() => setIsMenuOpen(false)}
                         >
                           {item.label}
-                        </a>
+                        </Link>
                       ))}
                     </div>
                   </nav>
