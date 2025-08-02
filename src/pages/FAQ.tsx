@@ -8,7 +8,7 @@ import SearchBox from '@/components/ui/SearchBox';
 import PageSEO from '@/components/SEO/PageSEO';
 
 const FAQ = () => {
-  const [openItems, setOpenItems] = useState<number[]>([]);
+  const [openItems, setOpenItems] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
 
   const faqData = [
@@ -60,11 +60,11 @@ const FAQ = () => {
     faq.answer.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const toggleItem = (index: number) => {
+  const toggleItem = (faqQuestion: string) => {
     setOpenItems(prev => 
-      prev.includes(index) 
-        ? prev.filter(i => i !== index)
-        : [...prev, index]
+      prev.includes(faqQuestion) 
+        ? prev.filter(i => i !== faqQuestion)
+        : [...prev, faqQuestion]
     );
   };
 
@@ -81,7 +81,7 @@ const FAQ = () => {
           faq.question.toLowerCase().includes(query.toLowerCase()) ||
           faq.answer.toLowerCase().includes(query.toLowerCase())
         );
-        setOpenItems(filteredData.map((_, index) => index));
+        setOpenItems(filteredData.map(faq => faq.question));
       }, 0);
     }
   };
@@ -174,23 +174,23 @@ const FAQ = () => {
 
             <div className="space-y-4">
               {filteredFaqData.map((faq, index) => (
-                <Card key={`${faq.question}-${index}`} className="overflow-hidden">
+                <Card key={faq.question} className="overflow-hidden">
                   <CardContent className="p-0">
                     <button
-                      onClick={() => toggleItem(index)}
+                      onClick={() => toggleItem(faq.question)}
                       className="w-full text-left p-6 flex items-center justify-between hover:bg-gray-50 transition-colors"
                     >
                       <h3 className="text-lg font-semibold text-secondary pr-4">
                         {faq.question}
                       </h3>
-                      {openItems.includes(index) ? (
+                      {openItems.includes(faq.question) ? (
                         <ChevronUp className="text-primary flex-shrink-0" size={20} />
                       ) : (
                         <ChevronDown className="text-primary flex-shrink-0" size={20} />
                       )}
                     </button>
                     
-                    {openItems.includes(index) && (
+                    {openItems.includes(faq.question) && (
                       <div className="px-6 pb-6">
                         <p className="text-neutral-medium leading-relaxed">
                           {faq.answer}
