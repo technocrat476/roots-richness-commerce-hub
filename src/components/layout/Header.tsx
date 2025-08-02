@@ -66,6 +66,60 @@ const Header = () => {
     <header className="bg-white shadow-sm border-b border-neutral-light sticky top-0 z-50">
       <div className="container mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-14 sm:h-16">
+          {/* Mobile Menu Button - Left Side */}
+          <Sheet open={isMenuOpen} onOpenChange={(open) => {
+            console.log('Sheet onOpenChange:', open);
+            setIsMenuOpen(open);
+          }}>
+            <SheetTrigger asChild>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="lg:hidden min-w-[48px] min-h-[48px] p-0 mr-3"
+                aria-label="Open menu"
+                onClick={() => console.log('Menu button clicked')}
+              >
+                <Menu size={20} />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-full sm:w-80 p-0">
+              <div className="flex flex-col h-full">
+                {/* Mobile Menu Header */}
+                <div className="p-6 border-b border-neutral-light">
+                  <div className="text-xl font-playfair font-bold text-secondary">
+                    Roots & Richness
+                  </div>
+                </div>
+                
+                {/* Mobile Navigation */}
+                <nav className="flex-1 px-6 py-4">
+                  <div className="space-y-1">
+                    {navItems.map((item) => (
+                      <Link
+                        key={item.href}
+                        to={item.href}
+                        className={`block font-medium text-lg py-3 px-4 rounded-lg transition-colors hover:bg-neutral-light ${
+                          isActive(item.href) ? 'text-primary bg-primary/10' : 'text-neutral-dark'
+                        }`}
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        {item.label}
+                      </Link>
+                    ))}
+                  </div>
+                </nav>
+
+                {/* Mobile Search */}
+                <div className="p-6 border-t border-neutral-light">
+                  <button className="flex items-center space-x-3 w-full p-4 hover:bg-neutral-light rounded-lg transition-colors">
+                    <Search size={20} className="text-neutral-dark" />
+                    <span className="text-neutral-dark font-medium">Search Products</span>
+                  </button>
+                </div>
+              </div>
+            </SheetContent>
+          </Sheet>
+
           {/* Logo - Mobile Optimized */}
           <Link to="/" className="flex items-center space-x-2 min-w-0 flex-1 sm:flex-none">
             <div className="text-lg sm:text-2xl font-playfair font-bold text-secondary truncate">
@@ -108,59 +162,6 @@ const Header = () => {
               )}
             </Link>
 
-            {/* Mobile Menu Button - Touch Friendly */}
-            <Sheet open={isMenuOpen} onOpenChange={(open) => {
-              console.log('Sheet onOpenChange:', open);
-              setIsMenuOpen(open);
-            }}>
-              <SheetTrigger asChild>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="lg:hidden min-w-[48px] min-h-[48px] p-0"
-                  aria-label="Open menu"
-                  onClick={() => console.log('Menu button clicked')}
-                >
-                  <Menu size={20} />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right" className="w-full sm:w-80 p-0">
-                <div className="flex flex-col h-full">
-                  {/* Mobile Menu Header */}
-                  <div className="p-6 border-b border-neutral-light">
-                    <div className="text-xl font-playfair font-bold text-secondary">
-                      Roots & Richness
-                    </div>
-                  </div>
-                  
-                  {/* Mobile Navigation */}
-                  <nav className="flex-1 px-6 py-4">
-                    <div className="space-y-1">
-                      {navItems.map((item) => (
-                        <Link
-                          key={item.href}
-                          to={item.href}
-                          className={`block font-medium text-lg py-3 px-4 rounded-lg transition-colors hover:bg-neutral-light ${
-                            isActive(item.href) ? 'text-primary bg-primary/10' : 'text-neutral-dark'
-                          }`}
-                          onClick={() => setIsMenuOpen(false)}
-                        >
-                          {item.label}
-                        </Link>
-                      ))}
-                    </div>
-                  </nav>
-
-                  {/* Mobile Search */}
-                  <div className="p-6 border-t border-neutral-light">
-                    <button className="flex items-center space-x-3 w-full p-4 hover:bg-neutral-light rounded-lg transition-colors">
-                      <Search size={20} className="text-neutral-dark" />
-                      <span className="text-neutral-dark font-medium">Search Products</span>
-                    </button>
-                  </div>
-                </div>
-              </SheetContent>
-            </Sheet>
           </div>
         </div>
       </div>
