@@ -1,35 +1,34 @@
 
 import PageSEO from './PageSEO';
 import { organizationData, websiteData } from '@/utils/structuredData';
+import { products } from '@/data/products';
+import { generateProductListStructuredData, generateBreadcrumbStructuredData } from '@/utils/seoUtils';
 
 const ProductsSEO = () => {
+  const breadcrumbData = generateBreadcrumbStructuredData([
+    { name: 'Home', url: 'https://rootsandrichness.in/' },
+    { name: 'Products', url: 'https://rootsandrichness.in/products' },
+  ]);
+
+  const productListData = generateProductListStructuredData(
+    products.filter(p => p.inStock),
+    'All Products - Roots and Richness'
+  );
+
+  const collectionPageData = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Premium Wood-Pressed Oils & Natural Products - Roots and Richness",
+    "description": "Shop our complete collection of wood-pressed oils, tribal coffee, and natural wellness products. Chemical-free, traditionally processed, and sourced directly from Indian farms.",
+    "url": "https://rootsandrichness.in/products",
+  };
+
   const productsStructuredData = [
     organizationData,
     websiteData,
-    {
-      "@context": "https://schema.org",
-      "@type": "CollectionPage",
-      "name": "Premium Wood-Pressed Oils & Natural Products - Roots and Richness",
-      "description": "Shop our complete collection of wood-pressed oils, tribal coffee, and natural wellness products. Chemical-free, traditionally processed, and sourced directly from Indian farms.",
-      "url": "https://rootsandrichness.in/products",
-      "breadcrumb": {
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-          {
-            "@type": "ListItem",
-            "position": 1,
-            "name": "Home",
-            "item": "https://rootsandrichness.in/"
-          },
-          {
-            "@type": "ListItem",
-            "position": 2,
-            "name": "Products",
-            "item": "https://rootsandrichness.in/products"
-          }
-        ]
-      }
-    }
+    collectionPageData,
+    breadcrumbData,
+    productListData
   ];
 
   return (
