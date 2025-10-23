@@ -1,14 +1,9 @@
 
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { CartProvider } from "./contexts/CartContext";
-import { AdminProvider } from "./contexts/AdminContext";
-import ErrorBoundary from "./components/ui/ErrorBoundary";
+import { Routes, Route } from "react-router-dom";
 import { Suspense, lazy } from "react";
+import { AppWrapper } from "./AppWrapper";
 import Loading from "./components/ui/Loading";
+import ErrorBoundary from "./components/ui/ErrorBoundary";
 
 // Lazy load components for better performance
 const AdminRoute = lazy(() => import("./components/admin/AdminRoute"));
@@ -33,27 +28,10 @@ const ReturnRefundPolicy = lazy(() => import("./pages/policies/ReturnRefundPolic
 const PrivacyPolicy = lazy(() => import("./pages/policies/PrivacyPolicy"));
 const TermsAndConditions = lazy(() => import("./pages/policies/TermsAndConditions"));
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: 1,
-      staleTime: 5 * 60 * 1000, // 5 minutes
-      refetchOnWindowFocus: false,
-    },
-  },
-});
-
 const App = () => (
-  <ErrorBoundary>
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <AdminProvider>
-          <CartProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <div className="min-h-screen flex flex-col">
-                <Routes>
+  <AppWrapper>
+    <div className="min-h-screen flex flex-col">
+      <Routes>
                   {/* Admin Routes */}
                   <Route path="/admin/login" element={
                     <Suspense fallback={<Loading fullScreen text="Loading admin..." />}>
@@ -97,14 +75,9 @@ const App = () => (
                       <Footer />
                     </Suspense>
                   } />
-                </Routes>
-              </div>
-            </BrowserRouter>
-          </CartProvider>
-        </AdminProvider>
-      </TooltipProvider>
-    </QueryClientProvider>
-  </ErrorBoundary>
+      </Routes>
+    </div>
+  </AppWrapper>
 );
 
 export default App;

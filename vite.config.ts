@@ -20,4 +20,16 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    manifest: true,
+    ssrManifest: true,
+    rollupOptions: {
+      input: {
+        main: path.resolve(__dirname, 'index.html')
+      }
+    }
+  },
+  ssr: {
+    noExternal: ['react-helmet-async']
+  }
 }));
