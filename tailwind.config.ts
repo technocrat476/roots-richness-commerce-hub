@@ -68,6 +68,12 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				sale: {
+					bg: 'hsl(var(--sale-bg))',
+					text: 'hsl(var(--sale-text))',
+					accent: 'hsl(var(--sale-accent))',
+					border: 'hsl(var(--sale-border))'
 				}
 			},
 			fontFamily: {
@@ -78,6 +84,9 @@ export default {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
 				sm: 'calc(var(--radius) - 4px)'
+			},
+			boxShadow: {
+				'sale': '0 2px 6px rgba(182, 139, 72, 0.15)',
 			},
 			keyframes: {
 				'accordion-down': {

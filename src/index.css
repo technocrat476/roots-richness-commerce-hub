@@ -46,6 +46,12 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Sale Info Component Colors */
+    --sale-bg: 35 57% 97%;        /* #FFF9F3 - light beige background */
+    --sale-text: 10 18% 22%;      /* #3B2F2F - rich brown text */
+    --sale-accent: 35 45% 50%;    /* #B68B48 - warm gold accent */
+    --sale-border: 35 35% 85%;    /* Soft beige border */
   }
 
   .dark {
@@ -84,6 +90,12 @@
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Sale Info Component Colors - Dark Mode */
+    --sale-bg: 35 20% 15%;        /* Dark beige background */
+    --sale-text: 35 30% 85%;      /* Light brown text */
+    --sale-accent: 35 50% 60%;    /* Brighter gold accent for dark mode */
+    --sale-border: 35 20% 25%;    /* Dark border */
   }
 }
 

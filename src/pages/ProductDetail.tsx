@@ -10,6 +10,7 @@ import { useCart } from '@/contexts/CartContext';
 import StickyCheckoutButton from '@/components/ui/StickyCheckoutButton';
 import PageSEO from '@/components/SEO/PageSEO';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
+import { SaleInfo } from '@/components/ui/SaleInfo';
 
 const ProductDetail = () => {
   const { slug } = useParams();
@@ -218,6 +219,13 @@ const ProductDetail = () => {
                 Inclusive of all taxes • Free shipping on orders above ₹500
               </p>
             </div>
+
+            {/* Sale Info - Countdown Timer & Social Proof */}
+            <SaleInfo 
+              saleActive={!!product.originalPrice}
+              saleEndTime={product.originalPrice ? new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString() : undefined}
+              purchasesToday={Math.floor(Math.random() * 91) + 30}
+            />
 
             {/* Size Selection */}
             {product.sizes && product.sizes.length > 0 && (
