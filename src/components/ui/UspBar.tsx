@@ -1,5 +1,4 @@
 import { Truck, Leaf, Users, Droplet } from "lucide-react";
-import useEmblaCarousel from "embla-carousel-react";
 import { useEffect, useState } from "react";
 
 const usps = [
@@ -10,15 +9,18 @@ const usps = [
 ];
 
 export const UspBar = () => {
-  const [emblaRef] = useEmblaCarousel({ 
-    loop: true, 
-    align: "center",
-    dragFree: true 
-  });
+  const [mounted, setMounted] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       
@@ -33,13 +35,23 @@ export const UspBar = () => {
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY]);
+  }, [lastScrollY, mounted]);
+
+  useEffect(() => {
+    if (!mounted) return;
+
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % usps.length);
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [mounted]);
 
   return (
     <div 
-      className={`sticky top-0 z-50 bg-[#FDF8F3] text-[#3B2F2F] border-b border-[#E6D8C5] transition-transform duration-300 ${
-        isVisible ? "translate-y-0" : "-translate-y-full"
-      }`}
+      className={`sticky top-0 z-50 bg-[#FDF8F3] text-[#3B2F2F] border-b border-[#E6D8C5] ${
+        mounted ? "transition-transform duration-300" : ""
+      } ${mounted && isVisible ? "translate-y-0" : mounted ? "-translate-y-full" : "translate-y-0"}`}
       role="banner"
       aria-label="Brand unique selling points"
     >
@@ -58,27 +70,37 @@ export const UspBar = () => {
         ))}
       </div>
 
-      {/* Mobile Carousel View */}
-      <div className="md:hidden overflow-hidden py-3" ref={emblaRef}>
-        <div className="flex touch-pan-y">
-          {usps.map((usp, i) => (
-            <div 
-              key={i} 
-              className="flex-[0_0_100%] min-w-0 flex items-center justify-center gap-2 px-4"
-            >
-              <usp.icon className="w-5 h-5 text-[#8B7355]" aria-hidden="true" />
-              <span className="font-medium text-sm" aria-label={usp.ariaLabel}>
-                {usp.text}
-              </span>
-            </div>
-          ))}
+      {/* Mobile Rotating View */}
+      <div className="md:hidden py-3 px-4">
+        <div className="flex items-center justify-center gap-2 transition-opacity duration-300">
+          {usps.map((usp, i) => {
+            const CurrentIcon = usp.icon;
+            return (
+              <div 
+                key={i}
+                className={`flex items-center gap-2 transition-opacity duration-300 ${
+                  i === currentIndex ? "opacity-100" : "opacity-0 absolute"
+                }`}
+              >
+                <CurrentIcon className="w-5 h-5 text-[#8B7355]" aria-hidden="true" />
+                <span className="font-medium text-sm" aria-label={usp.ariaLabel}>
+                  {usp.text}
+                </span>
+              </div>
+            );
+          })}
         </div>
       </div>
 
-      {/* Mobile Scroll Indicator */}
+      {/* Mobile Indicator Dots */}
       <div className="md:hidden flex justify-center gap-1.5 pb-2" aria-hidden="true">
         {usps.map((_, i) => (
-          <div key={i} className="w-1.5 h-1.5 rounded-full bg-[#E6D8C5]" />
+          <div 
+            key={i} 
+            className={`w-1.5 h-1.5 rounded-full transition-colors duration-300 ${
+              i === currentIndex ? "bg-[#8B7355]" : "bg-[#E6D8C5]"
+            }`} 
+          />
         ))}
       </div>
     </div>
