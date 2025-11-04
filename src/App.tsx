@@ -9,6 +9,7 @@ import ErrorBoundary from "./components/ui/ErrorBoundary";
 const AdminRoute = lazy(() => import("./components/admin/AdminRoute"));
 const Header = lazy(() => import("./components/layout/Header"));
 const Footer = lazy(() => import("./components/layout/Footer"));
+const UspBar = lazy(() => import("./components/ui/UspBar").then(m => ({ default: m.UspBar })));
 const Index = lazy(() => import("./pages/Index"));
 const Products = lazy(() => import("./pages/Products"));
 const ProductDetail = lazy(() => import("./pages/ProductDetail"));
@@ -49,6 +50,7 @@ const App = () => (
                   {/* Public Routes */}
                   <Route path="/*" element={
                     <Suspense fallback={<Loading fullScreen text="Loading..." />}>
+                      <UspBar />
                       <Header />
                       <main className="flex-1">
                         <ErrorBoundary>
