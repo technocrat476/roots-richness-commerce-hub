@@ -78,6 +78,7 @@ export const products: Product[] = [
     shortDescription: 'Cold-pressed sesame oil with rich, nutty flavor and health benefits.',
     category: 'oils',
     images: [
+      'https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?w=500&h=500&fit=crop',
       'https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?w=500&h=500&fit=crop'
     ],
     inStock: true,
